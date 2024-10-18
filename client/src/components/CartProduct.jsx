@@ -181,10 +181,11 @@
 // };
 
 // export default CartProduct;
+
 import { useState } from "react";
 import { FaStar, FaTrash } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
-import { updateQuantity, removeProduct } from "../Redux/cartSlice";
+import { updateQuantity, removeProduct, clearCart } from "../Redux/cartSlice";
 
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -224,7 +225,8 @@ const ShoppingCart = () => {
   const [errors, setErrors] = useState({});
 
   const updateQuantityFun = (item, newQuantity) => {
-    dispatch(updateQuantity({ ...item, newQuantity }));
+    console.log("updateQuantity", item);
+    dispatch(updateQuantity({ item, newQuantity }));
   };
 
   const updateSize = (id, newSize) => {
@@ -260,10 +262,60 @@ const ShoppingCart = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log("Order submitted", { cart, creditCard, promoCode });
+      if (
+        errors.number === undefined &&
+        errors.expiry === undefined &&
+        errors.cvv === undefined &&
+        errors.name === undefined
+      ) {
+        setErrors({ ...errors, ok: true });
+        console.log(errors);
+      }
+      if (!errors.ok) return false;
+      if (cart.length === 0) {
+        alert(
+          "There is no product in cart, please must be add product on cart"
+        );
+        return false;
+      }
+      if (isAuthenticated) {
+        if (cart.length === 0) {
+          alert(
+            "There is no product in cart, please must be add product on cart"
+          );
+          return false;
+        }
+        // Make API call to submit order with user information
+        let postData = await fetch("http://localhost:3005/order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user,
+            creditCard,
+            promoCode,
+            cart,
+          }),
+        });
+        let response = await postData.json();
+        alert(response.msg);
+        if (response.ok) {
+          dispatch(clearCart());
+          setCreditCard({
+            number: "",
+            expiry: "",
+            cvv: "",
+            name: "",
+          });
+        }
+      } else {
+        loginWithRedirect();
+      }
+      // console.log("Order submitted", { cart, creditCard, promoCode });
     }
   };
 
@@ -277,124 +329,102 @@ const ShoppingCart = () => {
   const discount = promoCode === "SUMMER10" ? subtotal * 0.1 : 0;
   const total = subtotal - discount;
 
-  const handleOrder = async () => {
-    console.log(
-      errors.number === undefined &&
-        errors.expiry === undefined &&
-        errors.cvv === undefined &&
-        errors.name === undefined
-    );
-    if (
-      errors.number === undefined &&
-      errors.expiry === undefined &&
-      errors.cvv === undefined &&
-      errors.name === undefined
-    ) {
-      setErrors({ ...errors, ok: true });
-      console.log(errors);
-    }
-    if (!errors.ok) return false;
-    if (isAuthenticated) {
-      let postData = await fetch("http://localhost:3005/order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user,
-          creditCard,
-          promoCode,
-          cart,
-        }),
-      });
-      let response = await postData.json();
-      if (!response.ok) {
-        throw new Error("Failed to submit order");
-      } else {
-        alert("Order submitted successfully!");
-      }
-    } else {
-      loginWithRedirect();
-    }
-  };
-
   return (
-    <div className="mx-auto p-14 w-full max-sm:p-4">
+    <div className="mx-auto p-14 w-full max-sm:p-4 mb-20 lg:mb-0">
       <h1 className="text-3xl font-bold text-center mb-4 md:hidden">
         Shopping Cart
       </h1>
       <div className="flex justify-around max-md:flex-col gap-8">
         <div className="w-1/2 max-md:w-full">
-          {cart.map((item) => (
-            <div
-              key={item.id}
-              className="bg-white p-4 rounded-lg shadow-md mb-4"
-            >
-              <div className="flex justify-between items-center mb-2">
-                <h2 className="text-xl font-semibold">{item.name}</h2>
-                <button
-                  onClick={() => removeItem(item)}
-                  className="text-red-500 hover:text-red-700"
-                  aria-label="Remove item"
-                >
-                  <FaTrash />
-                </button>
-              </div>
-              {!item.discount && (
-                <p className="text-gray-600 mb-2">${item.price.toFixed(2)}</p>
-              )}
-              {item.discount && (
-                <p className="text-gray-600 mb-2">${item.discount}</p>
-              )}
-              <div className="flex items-center mb-2">
-                <label htmlFor={`quantity-${item.id}`} className="mr-2">
-                  Quantity:
-                </label>
-                <input
-                  type="number"
-                  id={`quantity-${item.id}`}
-                  min="1"
-                  value={item.quantity}
-                  onChange={(e) => {
-                    let value = parseInt(e.target.value);
-                    updateQuantityFun(item, value);
-                  }}
-                  className="border rounded px-2 py-1 w-16"
-                />
-              </div>
-              <div className="flex items-center mb-2">
-                <span className="mr-2">Size:</span>
-                {item.sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => updateSize(item.id, size)}
-                    className={`mr-1 px-2 py-1 rounded ${
-                      item.size === size
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-200"
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-              <div className="flex items-center">
-                <span className="mr-2">Rating:</span>
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    onClick={() => updateRating(item.id, star)}
-                    className={`mr-1 ${
-                      star <= item.rate ? "text-yellow-500" : "text-gray-300"
-                    }`}
-                    aria-label={`Rate ${star} stars`}
-                  >
-                    <FaStar />
-                  </button>
-                ))}
-              </div>
+          {cart.length === 0 && (
+            <div className="text-center text-xl md:text-2xl lg:text-4xl font-bold">
+              There is no product Left in Cart
             </div>
-          ))}
+          )}
+          {cart.map((item) => {
+            // console.log(item)
+            return (
+              <div
+                key={item.id}
+                className="bg-white p-4 rounded-lg shadow-md mb-4 relative"
+              >
+                <img
+                  src={item.image[0]}
+                  alt={item.title}
+                  className="absolute h-44 top-[-10px] right-12"
+                />
+                <div className="flex justify-between items-center mb-2 w-1/2">
+                  <h2 className="text-xl font-semibold">{item.title}</h2>
+                  <button
+                    onClick={() => removeItem(item)}
+                    className="text-red-500 hover:text-red-700"
+                    aria-label="Remove item"
+                  >
+                    <FaTrash className="absolute top-5 right-5" />
+                  </button>
+                </div>
+                {!item.discount && (
+                  <p className="text-gray-600 mb-2 w-1/2">
+                    ${item.price.toFixed(2)}
+                  </p>
+                )}
+                {item.discount && (
+                  <p className="text-gray-600 mb-2">${item.discount}</p>
+                )}
+                <div className="flex items-center mb-2 w-1/2">
+                  <label htmlFor={`quantity-${item.id}`} className="mr-2">
+                    Quantity:
+                  </label>
+                  <input
+                    type="number"
+                    id={`quantity-${item.id}`}
+                    min="1"
+                    value={item.quantity}
+                    onChange={(e) => {
+                      let value = parseInt(e.target.value);
+                      updateQuantityFun(item, value);
+                    }}
+                    className="border rounded px-2 py-1 w-16"
+                  />
+                </div>
+                {item.sizes.length > 0 && (
+                  <div className="flex items-center mb-2 w-1/2">
+                    <span className="mr-2">Size:</span>
+                    {item.sizes.map((size) => (
+                      <button
+                        key={size}
+                        onClick={() => updateSize(item.id, size)}
+                        className={`mr-1 px-2 py-1 rounded ${
+                          item.size === size
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-200"
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <div className="flex items-center w-1/2">
+                  <span className="mr-2">Rating:</span>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      onClick={() => updateRating(item.id, star, item.rating)}
+                      className={`mr-1 ${
+                        star <= item.rating
+                          ? "text-yellow-500"
+                          : "text-gray-300"
+                      }`}
+                      aria-label={`Rate ${star} stars`}
+                    >
+                      <FaStar />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
         <div>
           <form
@@ -498,7 +528,7 @@ const ShoppingCart = () => {
               {cart.map((item) => (
                 <div key={item.id} className="flex justify-between mb-2">
                   <span>
-                    {item.name} x {item.quantity}
+                    {item.title} x {item.quantity}
                   </span>
                   {!item.discount && (
                     <span>${(item.price * item.quantity).toFixed(2)}</span>
@@ -511,7 +541,7 @@ const ShoppingCart = () => {
               <div className="border-t pt-2 mt-2">
                 <div className="flex justify-between mb-2">
                   <span>Subtotal</span>
-                  <span>${subtotal}</span>
+                  <span>${subtotal.toFixed(2)}</span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between mb-2 text-green-600">
@@ -521,14 +551,13 @@ const ShoppingCart = () => {
                 )}
                 <div className="flex justify-between font-semibold">
                   <span>Total</span>
-                  <span>${total}</span>
+                  <span>${total.toFixed(2)}</span>
                 </div>
               </div>
             </div>
             <button
               type="submit"
               className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
-              onClick={handleOrder}
             >
               Place Order
             </button>

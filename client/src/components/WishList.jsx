@@ -1,5 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { removeFavoriteProduct } from "../Redux/favoraiteSlice";
+import { FaTrash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const WishList = () => {
   const favorites = useSelector((state) => state.favorites.value);
@@ -8,8 +10,9 @@ const WishList = () => {
   const handleDelete = (product) => {
     dispatch(removeFavoriteProduct(product));
   };
+  console.log(favorites);
   return (
-    <div className="max-w-screen-lg mx-auto p-6">
+    <div className="mx-auto p-6 sm:p-8 lg:px-12 lg:py-8">
       <header className="flex flex-col sm:flex-row justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-gray-800 mb-4 sm:mb-0">
           Your Favorites
@@ -19,31 +22,32 @@ const WishList = () => {
         </button>
       </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="flex flex-col sm:flex-row items-center sm:items-start flex-wrap gap-6">
         {favorites.map((product) => {
           return (
-            <div
-              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300"
-              key={product._id}
+            <Link
+              to={`/product/${product.id}`}
+              key={product.id}
+              className="bg-white w-full sm:w-[30%] md:w-[22%] rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
             >
               <img
                 src={product.image}
-                alt={product.name}
+                alt={product.title}
                 className="w-full h-48 object-cover"
               />
               <div className="p-4">
                 <h2 className="text-xl font-semibold text-gray-700">
-                  {product.name}
+                  {product.title}
                 </h2>
-                <p className="text-lg text-gray-500 mb-4">${product.price}.00</p>
+                <p className="text-lg text-gray-500 mb-4">${product.price}</p>
                 <button
-                  className="bg-red-500 text-white w-full py-2 rounded-lg hover:bg-red-600 transition duration-300"
+                  className="bg-red-500 text-white w-full py-2 rounded-lg hover:bg-red-600 transition duration-300 flex justify-center items-center gap-2"
                   onClick={() => handleDelete(product)}
                 >
-                  Remove
+                  Delete <FaTrash />
                 </button>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

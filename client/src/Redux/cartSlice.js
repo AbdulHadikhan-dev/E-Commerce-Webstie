@@ -13,11 +13,11 @@ export const cartSlice = createSlice({
     },
     addQuantity: (state, action) => {
       const index = state.value.findIndex((item) => {
-        return item._id === action.payload._id;
+        return item.id === action.payload.existingProduct.id;
       });
       if (index !== -1) {
         console.log(action.payload);
-        state.value[index].quantity += action.payload.quantity[0];
+        state.value[index].quantity += action.payload.quantity;
       } else {
         state.value.push(action.payload);
       }
@@ -43,13 +43,13 @@ export const cartSlice = createSlice({
     },
     removeProduct: (state, action) => {
       const newArr = state.value.filter((item) => {
-        return item._id !== action.payload._id;
+        return item.id !== action.payload.id;
       });
       state.value = newArr;
     },
     updateQuantity: (state, action) => {
       const index = state.value.findIndex((item) => {
-        return item._id === action.payload._id;
+        return item.id === action.payload.item.id;
       });
       if (index !== -1) {
         state.value[index].quantity = action.payload.newQuantity;
@@ -59,7 +59,14 @@ export const cartSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { addProduct, addQuantity, decrement, increment, removeProduct, updateQuantity } =
-  cartSlice.actions;
+export const {
+  addProduct,
+  addQuantity,
+  decrement,
+  increment,
+  removeProduct,
+  updateQuantity,
+  clearCart,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

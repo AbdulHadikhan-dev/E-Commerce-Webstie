@@ -3,9 +3,13 @@ import { BiHomeAlt } from "react-icons/bi";
 import { MdFavoriteBorder } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
 import { LiaUser } from "react-icons/lia";
+import { AiOutlineFundProjectionScreen } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+
 
 const Navbar2 = ({ varients }) => {
+  const admin = useSelector((state) => state.admin.value);
   return (
     <>
       <nav
@@ -30,12 +34,18 @@ const Navbar2 = ({ varients }) => {
             <span className="text-sm">Favorite</span>
           </div>
         </Link>
-        <Link to={"/profile"} className="w-[25%]">
+        {!admin && <Link to={"/profile"} className="w-[25%]">
           <div className="profile flex flex-col gap-1 cursor-pointer font-semibold hover:text-black text-[#6C7278] duration-500  items-center justify-center">
             <LiaUser className="h-7 w-7" />
             <span className="text-sm">Profile</span>
           </div>
-        </Link>
+        </Link>}
+        {admin && <Link to={"/dashboard"} className="w-[25%]">
+          <div className="profile flex flex-col gap-1 cursor-pointer font-semibold hover:text-black text-[#6C7278] duration-500  items-center justify-center">
+            <AiOutlineFundProjectionScreen className="h-7 w-7" />
+            <span className="text-sm">Dashboard</span>
+          </div>
+        </Link>}
       </nav>
     </>
   );
