@@ -24,7 +24,7 @@ export default function DataTable() {
 
   const fetchData = async () => {
     // Fetch data from your API or any other source
-    const response = await fetch(`${process.env.BACKEND_URL}/user/all`);
+    const response = await fetch(`https://e-commerce-webstie-backend.vercel.app/user/all`);
     const data = await response.json();
     console.log("data", data, data.length);
     setRows(data);
@@ -32,7 +32,7 @@ export default function DataTable() {
 
   useEffect(() => {
     fetchData();
-    console.log(process.env.BACKEND_URL);
+    console.log("backend url", import.meta.env.BACKEND_URL);
   }, []);
 
   return (

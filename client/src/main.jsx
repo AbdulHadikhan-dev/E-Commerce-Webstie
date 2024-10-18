@@ -9,10 +9,10 @@ import { ChakraProvider } from "@chakra-ui/react";
 
 createRoot(document.getElementById("root")).render(
   <Auth0Provider
-    domain="dev-wygy0ul738msql5i.us.auth0.com"
-    clientId="6xoXGKSsDZkD7PbTMvQ8uKP9Z2CSsyRo"
+    domain="dev-uj3eub3g6fo2poov.us.auth0.com"
+    clientId="qkN0ZCwqn1V2mrt083FajexdFACUhIXq"
     authorizationParams={{
-      redirect_uri: window.location.origin,
+      redirect_uri: window.location.origin
     }}
   >
     <Provider store={store}>
