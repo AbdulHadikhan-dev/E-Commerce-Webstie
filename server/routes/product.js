@@ -4,23 +4,22 @@ const productModel = require("../models/productSchema");
 const connectDatabase = require("../database/db");
 
 
-
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   res.send("I send you all products and services");
   connectDatabase();
-  const product = productModel.insertMany({
-    name: "Generic Product",
+  const product = productModel({
+    name: "T-shirt For Mens",
     image: "https://flyingcart.pk/cdn/shop/files/BLACK_75832464-0c56-4897-bea2-1d5b9d2a4e2f.jpg?v=1705313601&width=1946",
     description: "A generic product",
-    price: Math.floor(Math.random() * (100 - 1) + 1), // Random price between 1 and 100
+    price: 300,
     stock: Math.floor(Math.random() * (1000 - 50) + 50), // Random stock between 50 and 1000
-    company: "Generic Brand",
-    category: "Electronics",
+    company: "lums lum",
+    category: "t-shirt",
     colors: ["Black", "White", "Red", "Blue"],
     // sizes: ["S", "M", "L", "XL"],
     review: Math.floor(Math.random() * (5 - 1) + 1), // Random review between 1 and 5
     rate: 4.7,
-    discount: 35, 
+    discount: 90, 
   });
   product.save().then(() => {
     console.log("Product saved to database");
@@ -28,10 +27,12 @@ router.get("/", (req, res) => {
   // console.log(productModel);
 });
 
-router.post("/", async (req, res) => {
+router.post("/add", async (req, res) => {
   let body = await req.body;
-  res.send(body);
-  console.log(body);
+  connectDatabase();
+  let addProduct = await productModel(body);
+  addProduct.save();
+  res.json({msg: "Product saved to database"});
 });
 
 router.get("/all", async (req, res) => {
@@ -48,6 +49,14 @@ router.get("/find/:id", async (req, res) => {
   console.log(product);
   res.send(product);
 });
+
+router.post('/category', async(req, res) => {
+  let body = await req.body;
+  connectDatabase();
+  let products = await productModel.find({ category: body.category });
+  console.log(products, body);
+  res.json(products);
+})
 
 router.get("/delete/all", async (req, res) => {
   connectDatabase();

@@ -6,13 +6,14 @@ const connectDatabase = require("../database/db");
 router.post("/", async (req, res) => {
   let body = req.body;
   console.log(body);
+
   await connectDatabase();
   let order = await orderModel(body);
   order
     .save()
-    .then(() => {
+    .then((data) => {
       console.log("Order saved");
-      res.json({ msg: "Order saved", ok: true });
+      res.json({ msg: "Order saved", ok: true, data });
     })
     .catch(() => {
       console.log("Error saving order");
