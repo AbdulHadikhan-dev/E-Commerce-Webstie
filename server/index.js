@@ -16,9 +16,9 @@ const bodyParser = require("body-parser");
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use("/product", Product);
-app.use("/order", Order);
-app.use("/user", User);
+app.use("/api/product", Product);
+app.use("/api/order", Order);
+app.use("/api/user", User);
 
 // Routes
 app.get("/", (req, res) => {
