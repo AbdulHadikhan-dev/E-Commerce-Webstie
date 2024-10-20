@@ -7,6 +7,8 @@ const Order = require("./routes/order.js");
 const User = require("./routes/user.js");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const serverless = require('serverless-http');
+
 
 // setup authorization 
 // app.set("trust proxy", true);
