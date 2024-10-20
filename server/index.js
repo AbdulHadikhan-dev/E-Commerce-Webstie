@@ -32,6 +32,9 @@ app.get('/api/endpoint', (req, res) => {
 });
 
 // Start HTTPS server
-app.listen(port, () => {
-  console.log(`HTTPS Server running on port ${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`HTTPS Server running on port ${port}`);
+// });
+
+module.exports = app;
+module.exports.handler = serverless(app);
