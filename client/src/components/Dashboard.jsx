@@ -30,7 +30,7 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
 
   const fetchUsers = async () => {
-    const url = "http://localhost:3005/user/all";
+    const url = `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/user/all`;
     const response = await fetch(url);
     let r = await response.json();
     setUsers(r.length);

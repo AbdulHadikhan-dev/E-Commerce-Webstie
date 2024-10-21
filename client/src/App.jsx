@@ -34,9 +34,10 @@ function App() {
   const admin = useSelector((state) => state.admin.value);
   const dispatch = useDispatch();
 
-  console.log(user);
+  console.log(user, "env",import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL);
+  
   const checkUser = async (user) => {
-    let request = await fetch("http://localhost:3005/user/find/add", {
+    let request = await fetch(`${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/user/find/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

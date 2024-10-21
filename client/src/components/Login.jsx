@@ -51,7 +51,7 @@ const SignInModal = () => {
     if (validateEmail(email) && password.length >= 8) {
       setIsLoading(true);
       // Simulating API call
-      let fetchData = await fetch("http://localhost:3005/user", {
+      let fetchData = await fetch(`${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/user`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

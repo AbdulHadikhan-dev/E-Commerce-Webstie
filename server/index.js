@@ -7,7 +7,6 @@ const Order = require("./routes/order.js");
 const User = require("./routes/user.js");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const serverless = require('serverless-http');
 
 
 // setup authorization 
@@ -31,10 +30,6 @@ app.get('/api/endpoint', (req, res) => {
   res.send('API is working');
 });
 
-// Start HTTPS server
-// app.listen(port, () => {
-//   console.log(`HTTPS Server running on port ${port}`);
-// });
-
-module.exports = app;
-module.exports.handler = serverless(app);
+app.listen(port, () => {
+  console.log(`HTTPS Server running on port ${port}`);
+});

@@ -289,7 +289,7 @@ const ShoppingCart = () => {
           return false;
         }
         // Make API call to submit order with user information
-        let postData = await fetch("http://localhost:3005/order", {
+        let postData = await fetch(`${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/order`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
