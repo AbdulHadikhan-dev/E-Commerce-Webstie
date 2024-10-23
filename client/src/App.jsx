@@ -36,9 +36,11 @@ function App() {
   // console.log(user, "env",import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL);
   
   const checkUser = async (user) => {
+    const authorization = import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL;
     let request = await fetch(`${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/find/add`, {
       method: "POST",
       headers: {
+          'Authorization': authorization,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ user, isAdmin: false }),
