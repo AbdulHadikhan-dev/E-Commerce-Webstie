@@ -12,7 +12,6 @@ import Footer from "./components/Footer";
 import Result from "./components/Result";
 import Search from "./components/Search";
 import Navigation from "./components/Navigation";
-import Login from "./components/Login";
 
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -152,14 +151,6 @@ function App() {
         <ChakraProvider>
           <main>{admin ? <AdminDashboard /> : <NotFound />}</main>,
         </ChakraProvider>
-      ),
-    },
-    {
-      path: "/login",
-      element: (
-        <main>
-          <Login />
-        </main>
       ),
     },
   ]);
