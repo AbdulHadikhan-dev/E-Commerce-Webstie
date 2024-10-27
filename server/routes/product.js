@@ -38,7 +38,7 @@ router.post("/add", async (req, res) => {
 router.get("/all", async (req, res) => {
   connectDatabase();
   let allProducts = await productModel.find({});
-  res.send(allProducts);
+  res.json(allProducts);
 });
 
 router.get("/find/:id", async (req, res) => {
