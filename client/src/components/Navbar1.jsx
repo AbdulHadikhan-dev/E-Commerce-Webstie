@@ -209,7 +209,7 @@ const Navbar = ({ varients, icons, logo }) => {
             // <Link to={"/login"}>
             <div
               className="profile max-lg:hidden"
-              onClick={() => loginWithRedirect()}
+              onClick={() => loginWithRedirect("/cart")}
             >
               <div className="user">
                 <MdLogin
