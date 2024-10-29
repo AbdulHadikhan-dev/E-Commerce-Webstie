@@ -81,4 +81,22 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.post("/update/profile", async (req, res) => {
+  const uri = process.env.MONGO_URI;
+  const client = new MongoClient(uri);
+  let body = req.body;
+  console.log(body);
+  try {
+    await client.connect();
+    let db = client.db("Review");
+    let users = db.collection("users");
+    let updateUser  = await users.updateOne({sub: body.sub}, {name: body.name, location: body.location, bio: body.bio, address: body.address, contact: body.contact});
+    res.json(updateUser);
+  } finally {
+    client.close();
+  }
+
+  // res.json({ msg: 'User data received', ok: true, body });
+});
+
 module.exports = router;

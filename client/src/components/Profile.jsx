@@ -3,9 +3,6 @@ import {
   FaPhoneAlt,
   FaEnvelope,
   FaMapMarkerAlt,
-  FaFacebook,
-  FaTwitter,
-  FaInstagram,
   FaEdit,
   FaTrash,
   FaSignOutAlt,
@@ -26,6 +23,7 @@ const UserProfile = () => {
     bio: "",
     contact: "",
     address: "",
+    sub: "",
   });
 
   const [image, setimage] = useState("");
@@ -34,7 +32,9 @@ const UserProfile = () => {
   const fetchOrders = () => {
     // Fetch orders from backend API
     fetch(
-      `http://localhost:3000/api/order/find?user_id=google-oauth2|114674367232483931015`
+      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}api/order/find?user_id=${
+        user.sub
+      }`
     )
       .then((res) => res.json())
       .then((orders) => {
@@ -44,11 +44,14 @@ const UserProfile = () => {
       .catch((error) => console.error("Error fetching orders:", error));
   };
   const fetchUser = () => {
-    fetch(`http://localhost:3000/api/user/google-oauth2|114674367232483931015`)
+    fetch(
+      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}api/user/${user.sub}`
+    )
       .then((res) => res.json())
       .then((user) => {
         console.log(user);
         setUser(user);
+        setAddDetails({ ...addDetails, sub: user.sub });
       })
       .catch((error) => console.error("Error fetching orders:", error));
   };
@@ -71,6 +74,18 @@ const UserProfile = () => {
 
   const handleSetDetail = () => {
     console.log(addDetails);
+    fetch(
+      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}api/user/update/profile`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(addDetails),
+      }
+    ).then(() => {
+      fetchUser();
+    });
   };
 
   return !isAuthenticated ? (
@@ -250,12 +265,9 @@ const UserProfile = () => {
             <p className="text-sm text-gray-400 mt-2">
               Member since January 2021
             </p>
-            <p className="text-gray-700 my-4">
-              Bio: {user.bio}
-            </p>
+            <p className="text-gray-700 my-4">Bio: {user.bio}</p>
 
             {/* Social Icons */}
-            
           </div>
         </div>
 
@@ -290,7 +302,7 @@ const UserProfile = () => {
             <ul className="mt-4 text-gray-700 space-y-2">
               <li className="flex items-center">
                 <FaPhoneAlt className="mr-2 text-indigo-500" />
-                <span>{user.contact? user.contact: "+92 0000000000"}</span>
+                <span>{user.contact ? user.contact : "+92 0000000000"}</span>
               </li>
               <li className="flex items-center">
                 <FaEnvelope className="mr-2 text-indigo-500" />
@@ -298,7 +310,9 @@ const UserProfile = () => {
               </li>
               <li className="flex items-center">
                 <FaMapMarkerAlt className="mr-2 text-indigo-500" />
-                <span>{user.address? user.address: "Please Add location"}</span>
+                <span>
+                  {user.address ? user.address : "Please Add location"}
+                </span>
               </li>
             </ul>
           </div>
@@ -306,7 +320,9 @@ const UserProfile = () => {
             <h2 className="text-2xl font-bold text-gray-800">
               Shipping Address
             </h2>
-            <p className="mt-4 text-gray-700">{user.address? user.address: "Please Add location"}</p>
+            <p className="mt-4 text-gray-700">
+              {user.address ? user.address : "Please Add location"}
+            </p>
           </div>
         </div>
 
