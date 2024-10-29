@@ -115,7 +115,7 @@ function App() {
       element: (
         <ChakraProvider>
           <main>
-            <Navbar1 icons={"text-gray-500"} />
+            {/* <Navbar1 icons={"text-gray-500"} /> */}
             <Profile />
             <Footer />
             <Navbar2 varients="fixed bottom-0" />

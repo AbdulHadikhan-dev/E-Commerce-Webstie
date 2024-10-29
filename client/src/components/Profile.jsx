@@ -16,8 +16,10 @@ import { IoCameraOutline } from "react-icons/io5";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const UserProfile = () => {
-  const { user, isAuthenticated, loginWithRedirect } = useAuth0();
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
   const [orders, setOrders] = useState([]);
+  const [user, setUser] = useState({});
+
   const [addDetails, setAddDetails] = useState({
     name: "",
     locaion: "",
@@ -41,9 +43,19 @@ const UserProfile = () => {
       })
       .catch((error) => console.error("Error fetching orders:", error));
   };
+  const fetchUser = () => {
+    fetch(`http://localhost:3000/api/user/google-oauth2|114674367232483931015`)
+      .then((res) => res.json())
+      .then((user) => {
+        console.log(user);
+        setUser(user);
+      })
+      .catch((error) => console.error("Error fetching orders:", error));
+  };
 
   useEffect(() => {
     fetchOrders();
+    fetchUser();
   }, []);
 
   const handleAddDetails = () => {
@@ -218,44 +230,32 @@ const UserProfile = () => {
         </div>
         <div className="relative z-10 flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-6 mt-20 md:mt-36">
           {/* Profile Picture */}
-          <div className="relative md:w-72">
-            {/* <img
-              src={user.picture ? user.picture : "https://placehiol.com"}
-              alt={user.picture ? user.picture : "/"}
+          <div className="relative">
+            <img
+              src={user.picture}
+              alt={user.picture}
               className="w-36 h-36 rounded-full object-cover border-4 border-white shadow-lg"
-            /> */}
+            />
             {/* Online Status */}
             <span className="absolute bottom-1 right-1 w-5 h-5 bg-green-400 border-2 border-white rounded-full"></span>
           </div>
 
           {/* User Info */}
           <div className="flex-grow">
-            <h1 className="text-4xl font-extrabold text-gray-800">
-              {/* {user.name ? user.name : "John"} */}
+            <h1 className="text-4xl font-semibold text-gray-800">
+              {user.name}
             </h1>
             <p className="text-lg text-gray-600 mt-1">E-commerce Specialist</p>
             <p className="text-gray-500">Lahore, Pakistan</p>
             <p className="text-sm text-gray-400 mt-2">
               Member since January 2021
             </p>
-            <p className="text-gray-700 mt-4">
-              Bio: A passionate e-commerce enthusiast who loves to shop and
-              explore new trends. Always excited to learn more about the latest
-              tech and gadgets!
+            <p className="text-gray-700 my-4">
+              Bio: {user.bio}
             </p>
 
             {/* Social Icons */}
-            <div className="mt-4 flex space-x-4 text-gray-500">
-              <a href="#" className="hover:text-blue-500">
-                <FaFacebook size={24} />
-              </a>
-              <a href="#" className="hover:text-blue-400">
-                <FaTwitter size={24} />
-              </a>
-              <a href="#" className="hover:text-pink-500">
-                <FaInstagram size={24} />
-              </a>
-            </div>
+            
           </div>
         </div>
 
@@ -290,15 +290,15 @@ const UserProfile = () => {
             <ul className="mt-4 text-gray-700 space-y-2">
               <li className="flex items-center">
                 <FaPhoneAlt className="mr-2 text-indigo-500" />
-                <span>+92 300 1234567</span>
+                <span>{user.contact? user.contact: "+92 0000000000"}</span>
               </li>
               <li className="flex items-center">
                 <FaEnvelope className="mr-2 text-indigo-500" />
-                <span>johndoe@example.com</span>
+                <span>{user.email}</span>
               </li>
               <li className="flex items-center">
                 <FaMapMarkerAlt className="mr-2 text-indigo-500" />
-                <span>123 Main St, Lahore, Pakistan</span>
+                <span>{user.address? user.address: "Please Add location"}</span>
               </li>
             </ul>
           </div>
@@ -306,7 +306,7 @@ const UserProfile = () => {
             <h2 className="text-2xl font-bold text-gray-800">
               Shipping Address
             </h2>
-            <p className="mt-4 text-gray-700">123 Main St, Lahore, Pakistan</p>
+            <p className="mt-4 text-gray-700">{user.address? user.address: "Please Add location"}</p>
           </div>
         </div>
 
@@ -323,19 +323,24 @@ const UserProfile = () => {
                   <p className="font-medium text-gray-800">Order #1234</p>
                   <p className="text-gray-500">Date: 2024-10-01</p>
                   {order.cart.map((item) => {
-                    return <div className="order flex gap-3 items-center my-2" key={item.id}>
-                      <img
-                        src={item.image[0]}
-                        alt=""
-                        className="h-20"
-                      />
-                      <div className="details">
-                        <p className="text-lg font-medium">{item.title}</p>
-                        <p className="text-base">{item.price} x {item.quantity}</p>
+                    return (
+                      <div
+                        className="order flex gap-3 items-center my-2"
+                        key={item.id}
+                      >
+                        <img src={item.image[0]} alt="" className="h-20" />
+                        <div className="details">
+                          <p className="text-lg font-medium">{item.title}</p>
+                          <p className="text-base">
+                            {item.price} x {item.quantity}
+                          </p>
+                        </div>
                       </div>
-                    </div>;
+                    );
                   })}
-                  <p className="text-black text-lg">Total: $120.00</p>
+                  <p className="text-black text-lg">
+                    Total: {order.totalPrice}
+                  </p>
                 </li>
               );
             })}

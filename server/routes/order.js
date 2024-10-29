@@ -1,8 +1,24 @@
 const express = require("express");
 const router = express.Router();
-import { MongoClient } from "mongodb";
+const { MongoClient } = require("mongodb");
 
-router.post("/", async (req, res) => {
+router.get("/:slug", async (req, res) => {
+  const uri = process.env.MONGO_URI;
+  const client = new MongoClient(uri);
+  let id = req.query.user_id;
+  console.log(id);
+  try {
+    await client.connect();
+    let db = client.db("Review");
+    let orders = db.collection("orders");
+    let data = await orders.find({ "user.sub": id }).toArray();
+    res.json(data);
+  } finally {
+    client.close();
+  }
+});
+
+router.post("/add", async (req, res) => {
   let body = req.body;
   console.log(body);
   const uri = process.env.MONGO_URI;
