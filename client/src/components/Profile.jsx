@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaPhoneAlt,
   FaEnvelope,
@@ -10,17 +10,183 @@ import {
   FaTrash,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { RxCross2 } from "react-icons/rx";
 import { IoCameraOutline } from "react-icons/io5";
 
 import { useAuth0 } from "@auth0/auth0-react";
 
 const UserProfile = () => {
   const { user, isAuthenticated, loginWithRedirect } = useAuth0();
+  const [orders, setOrders] = useState([]);
+  const [addDetails, setAddDetails] = useState({
+    name: "",
+    locaion: "",
+    bio: "",
+    contact: "",
+    address: "",
+  });
 
   const [image, setimage] = useState("");
   console.log(user);
+
+  const fetchOrders = () => {
+    // Fetch orders from backend API
+    fetch(
+      `http://localhost:3000/api/order/find?user_id=google-oauth2|114674367232483931015`
+    )
+      .then((res) => res.json())
+      .then((orders) => {
+        setOrders(orders);
+        console.log(orders);
+      })
+      .catch((error) => console.error("Error fetching orders:", error));
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const handleAddDetails = () => {
+    let addDetails = document.querySelector(".add-details");
+    let black = document.querySelector(".black");
+    addDetails.classList.remove("hidden");
+    black.classList.remove("hidden");
+  };
+
+  const handleChange = (e) => {
+    setAddDetails({ ...addDetails, [e.target.name]: e.target.value });
+  };
+
+  const handleSetDetail = () => {
+    console.log(addDetails);
+  };
+
   return !isAuthenticated ? (
     <div className="min-h-screen bg-gray-100 flex justify-center md:py-10">
+      <div className="black absolute top-0 h-full w-full z-[60] bg-black bg-opacity-20 hidden"></div>
+      <div
+        className="add-details bg-white p-6 rounded-lg shadow-lg max-w-md w-full h-fit fixed top-[50%] left-[50%] z-[70] hidden"
+        style={{ transform: "translate(-50%, -50%)" }}
+      >
+        <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+          Add Information
+        </h2>
+        <form onSubmit={handleSetDetail}>
+          <RxCross2
+            className="absolute top-8 right-8 cursor-pointer scale-150"
+            onClick={() => {
+              let addDetails = document.querySelector(".add-details");
+              let black = document.querySelector(".black");
+              addDetails.classList.add("hidden");
+              black.classList.add("hidden");
+            }}
+          />
+          {/* <!-- Name --> */}
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 font-medium mb-2"
+              htmlFor="name"
+            >
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={addDetails.name}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+              placeholder="Your Name"
+            />
+          </div>
+
+          {/* <!-- Location --> */}
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 font-medium mb-2"
+              htmlFor="location"
+            >
+              Location
+            </label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              value={addDetails.location}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+              placeholder="Your Location"
+            />
+          </div>
+
+          {/* <!-- Bio --> */}
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 font-medium mb-2"
+              htmlFor="bio"
+            >
+              Bio
+            </label>
+            <textarea
+              id="bio"
+              name="bio"
+              value={addDetails.bio}
+              onChange={handleChange}
+              rows="3"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+              placeholder="Short bio about yourself"
+            ></textarea>
+          </div>
+
+          {/* <!-- Contact Number --> */}
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 font-medium mb-2"
+              htmlFor="contact"
+            >
+              Contact Number
+            </label>
+            <input
+              type="tel"
+              id="contact"
+              name="contact"
+              value={addDetails.contact}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+              placeholder="Your Contact Number"
+            />
+          </div>
+
+          {/* <!-- Shipping Address --> */}
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 font-medium mb-2"
+              htmlFor="address"
+            >
+              Shipping Address
+            </label>
+            <textarea
+              id="address"
+              name="address"
+              value={addDetails.address}
+              onChange={handleChange}
+              rows="3"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+              placeholder="Your Shipping Address"
+            ></textarea>
+          </div>
+
+          {/* <!-- Submit Button --> */}
+          <div>
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
       <div className="w-full max-w-4xl bg-white rounded-lg shadow-xl p-8 relative">
         {/* Back Cover Picture */}
 
@@ -53,18 +219,20 @@ const UserProfile = () => {
         <div className="relative z-10 flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-6 mt-20 md:mt-36">
           {/* Profile Picture */}
           <div className="relative md:w-72">
-            <img
-              src={user.picture? user.picture:'https://placehiol.com'}
-              alt={user.picture? user.picture:'/'}
+            {/* <img
+              src={user.picture ? user.picture : "https://placehiol.com"}
+              alt={user.picture ? user.picture : "/"}
               className="w-36 h-36 rounded-full object-cover border-4 border-white shadow-lg"
-            />
+            /> */}
             {/* Online Status */}
             <span className="absolute bottom-1 right-1 w-5 h-5 bg-green-400 border-2 border-white rounded-full"></span>
           </div>
 
           {/* User Info */}
           <div className="flex-grow">
-            <h1 className="text-4xl font-extrabold text-gray-800">{user.name? user.name:'John'}</h1>
+            <h1 className="text-4xl font-extrabold text-gray-800">
+              {/* {user.name ? user.name : "John"} */}
+            </h1>
             <p className="text-lg text-gray-600 mt-1">E-commerce Specialist</p>
             <p className="text-gray-500">Lahore, Pakistan</p>
             <p className="text-sm text-gray-400 mt-2">
@@ -93,7 +261,10 @@ const UserProfile = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-col space-y-4 mt-6 md:mt-0 md:space-y-0 md:flex-row md:space-x-4 justify-end">
-          <button className="flex items-center bg-gradient-to-r from-green-400 to-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:from-green-500 hover:to-blue-600 transition duration-300">
+          <button
+            className="flex items-center bg-gradient-to-r from-green-400 to-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:from-green-500 hover:to-blue-600 transition duration-300"
+            onClick={handleAddDetails}
+          >
             <FaEdit className="mr-2" />
             Edit Profile
           </button>
@@ -143,16 +314,31 @@ const UserProfile = () => {
         <div className="mt-8">
           <h2 className="text-2xl font-bold text-gray-800">Order History</h2>
           <ul className="mt-4 space-y-4">
-            <li className="bg-gray-50 p-4 rounded-lg shadow-md transition duration-200 hover:shadow-lg">
-              <p className="font-medium text-gray-800">Order #1234</p>
-              <p className="text-gray-500">Date: 2024-10-01</p>
-              <p className="text-gray-500">Total: $120.00</p>
-            </li>
-            <li className="bg-gray-50 p-4 rounded-lg shadow-md transition duration-200 hover:shadow-lg">
-              <p className="font-medium text-gray-800">Order #5678</p>
-              <p className="text-gray-500">Date: 2024-09-25</p>
-              <p className="text-gray-500">Total: $80.00</p>
-            </li>
+            {orders.map((order) => {
+              return (
+                <li
+                  className="bg-gray-50 p-4 rounded-lg shadow-md transition duration-200 hover:shadow-lg"
+                  key={order._id}
+                >
+                  <p className="font-medium text-gray-800">Order #1234</p>
+                  <p className="text-gray-500">Date: 2024-10-01</p>
+                  {order.cart.map((item) => {
+                    return <div className="order flex gap-3 items-center my-2" key={item.id}>
+                      <img
+                        src={item.image[0]}
+                        alt=""
+                        className="h-20"
+                      />
+                      <div className="details">
+                        <p className="text-lg font-medium">{item.title}</p>
+                        <p className="text-base">{item.price} x {item.quantity}</p>
+                      </div>
+                    </div>;
+                  })}
+                  <p className="text-black text-lg">Total: $120.00</p>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>
