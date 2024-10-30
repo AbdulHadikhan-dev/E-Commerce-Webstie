@@ -19,7 +19,7 @@ const UserProfile = () => {
 
   const [addDetails, setAddDetails] = useState({
     name: "",
-    locaion: "",
+    location: "",
     bio: "",
     contact: "",
     address: "",
@@ -32,9 +32,9 @@ const UserProfile = () => {
   const fetchOrders = () => {
     // Fetch orders from backend API
     fetch(
-      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/order/find?user_id=${
-        user.sub
-      }`
+      `${
+        import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
+      }/api/order/find?user_id=${user.sub}`
     )
       .then((res) => res.json())
       .then((orders) => {
@@ -75,7 +75,9 @@ const UserProfile = () => {
   const handleSetDetail = () => {
     console.log(addDetails);
     fetch(
-      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/update/profile`,
+      `${
+        import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
+      }/api/user/update/profile`,
       {
         method: "POST",
         headers: {
@@ -240,6 +242,20 @@ const UserProfile = () => {
               setimage(
                 URL.createObjectURL(e.target.files[e.target.files.length - 1])
               );
+              fetch(
+                `${
+                  import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
+                }/api/user/update/profile/cover`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(image),
+                }
+              ).then(() => {
+                fetchUser();
+              });
             }}
           />
         </div>
@@ -355,7 +371,7 @@ const UserProfile = () => {
                     );
                   })}
                   <p className="text-black text-lg">
-                    Total: {order.totalPrice}
+                    Total: {order.totalPrice.toFixed(2)}
                   </p>
                 </li>
               );
