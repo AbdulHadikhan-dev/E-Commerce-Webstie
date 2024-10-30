@@ -13,9 +13,9 @@ import { IoCameraOutline } from "react-icons/io5";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const UserProfile = () => {
-  const { isAuthenticated, loginWithRedirect } = useAuth0();
+  const { user, isAuthenticated, loginWithRedirect } = useAuth0();
   const [orders, setOrders] = useState([]);
-  const [user, setUser] = useState({});
+  const [User, setUser] = useState({});
 
   const [addDetails, setAddDetails] = useState({
     name: "",
@@ -247,8 +247,8 @@ const UserProfile = () => {
           {/* Profile Picture */}
           <div className="relative">
             <img
-              src={user.picture}
-              alt={user.picture}
+              src={User.picture}
+              alt={User.picture}
               className="w-36 h-36 rounded-full object-cover border-4 border-white shadow-lg"
             />
             {/* Online Status */}
@@ -258,7 +258,7 @@ const UserProfile = () => {
           {/* User Info */}
           <div className="flex-grow">
             <h1 className="text-4xl font-semibold text-gray-800">
-              {user.name}
+              {User.name}
             </h1>
             <p className="text-lg text-gray-600 mt-1">E-commerce Specialist</p>
             <p className="text-gray-500">Lahore, Pakistan</p>
@@ -302,16 +302,16 @@ const UserProfile = () => {
             <ul className="mt-4 text-gray-700 space-y-2">
               <li className="flex items-center">
                 <FaPhoneAlt className="mr-2 text-indigo-500" />
-                <span>{user.contact ? user.contact : "+92 0000000000"}</span>
+                <span>{User.contact ? User.contact : "+92 0000000000"}</span>
               </li>
               <li className="flex items-center">
                 <FaEnvelope className="mr-2 text-indigo-500" />
-                <span>{user.email}</span>
+                <span>{User.email}</span>
               </li>
               <li className="flex items-center">
                 <FaMapMarkerAlt className="mr-2 text-indigo-500" />
                 <span>
-                  {user.address ? user.address : "Please Add location"}
+                  {User.address ? User.address : "Please Add location"}
                 </span>
               </li>
             </ul>
@@ -321,7 +321,7 @@ const UserProfile = () => {
               Shipping Address
             </h2>
             <p className="mt-4 text-gray-700">
-              {user.address ? user.address : "Please Add location"}
+              {User.address ? User.address : "Please Add location"}
             </p>
           </div>
         </div>
