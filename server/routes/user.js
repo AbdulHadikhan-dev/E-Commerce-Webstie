@@ -26,7 +26,7 @@ router.post("/find/add", async (req, res) => {
   await client.connect();
   let db = client.db("Review");
   let users = db.collection("users");
-  let findUser = await users.findOne({ email: body.user.sub });
+  let findUser = await users.findOne({ sub: body.user.sub });
   if (findUser) {
     res.json({ msg: "user already exist", ok: true, findUser });
     return;

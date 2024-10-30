@@ -88,7 +88,7 @@ const UserProfile = () => {
     });
   };
 
-  return !isAuthenticated ? (
+  return isAuthenticated ? (
     <div className="min-h-screen bg-gray-100 flex justify-center md:py-10">
       <div className="black absolute top-0 h-full w-full z-[60] bg-black bg-opacity-20 hidden"></div>
       <div
