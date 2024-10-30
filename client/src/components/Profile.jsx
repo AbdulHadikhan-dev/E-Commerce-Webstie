@@ -32,7 +32,7 @@ const UserProfile = () => {
   const fetchOrders = () => {
     // Fetch orders from backend API
     fetch(
-      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}api/order/find?user_id=${
+      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/order/find?user_id=${
         user.sub
       }`
     )
@@ -45,7 +45,7 @@ const UserProfile = () => {
   };
   const fetchUser = () => {
     fetch(
-      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}api/user/${user.sub}`
+      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/${user.sub}`
     )
       .then((res) => res.json())
       .then((user) => {
@@ -75,7 +75,7 @@ const UserProfile = () => {
   const handleSetDetail = () => {
     console.log(addDetails);
     fetch(
-      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}api/user/update/profile`,
+      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/update/profile`,
       {
         method: "POST",
         headers: {
