@@ -77,9 +77,9 @@ const UserProfile = () => {
     fetch(
       `${
         import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
-      }/api/user/update/profile`,
+      }/api/user/update/user/addDetails`,
       {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -245,13 +245,13 @@ const UserProfile = () => {
               fetch(
                 `${
                   import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
-                }/api/user/update/profile/cover`,
+                }/api/user/update/user/cover`,
                 {
-                  method: "POST",
+                  method: "PUT",
                   headers: {
                     "Content-Type": "application/json",
                   },
-                  body: JSON.stringify(image),
+                  body: JSON.stringify({image}),
                 }
               ).then(() => {
                 fetchUser();

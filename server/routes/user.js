@@ -81,7 +81,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/update/profile", async (req, res) => {
+router.put("/update/user/:slug", async (req, res) => {
   const uri = process.env.MONGO_URI;
   const client = new MongoClient(uri);
   let body = req.body;
@@ -90,8 +90,13 @@ router.post("/update/profile", async (req, res) => {
     await client.connect();
     let db = client.db("Review");
     let users = db.collection("users");
-    let updateUser  = await users.updateOne({sub: body.sub}, {name: body.name, location: body.location, bio: body.bio, address: body.address, contact: body.contact});
-    res.json(updateUser);
+    for (let key in body) {
+      console.log(key, body[key]);
+      await users.updateOne({ sub: body.sub }, { $set: { [key]: body[key] } });
+    }
+    // let updateUser  = await users.updateOne({sub: body.sub}, {name: body.name, location: body.location, bio: body.bio, address: body.address, contact: body.contact});
+    let user = await users.findOne({ sub: body.sub });
+    res.json(user);
   } finally {
     client.close();
   }
