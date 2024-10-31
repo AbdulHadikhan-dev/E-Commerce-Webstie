@@ -2,9 +2,9 @@ const express = require("express");
 // const { ExpressAuth } = require("@auth/express");
 const app = express();
 const port = process.env.PORT || 3000;
-const Product = require("./routes/product.js");
-const Order = require("./routes/order.js");
-const User = require("./routes/user.js");
+const Product = require("../routes/product.js");
+const Order = require("../routes/order.js");
+const User = require("../routes/user.js");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 
