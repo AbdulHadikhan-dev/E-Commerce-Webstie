@@ -6,20 +6,31 @@ import "./index.css";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
 import { ChakraProvider } from "@chakra-ui/react";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#1976d2", // or any valid color code
+    },
+  },
+});
 
 createRoot(document.getElementById("root")).render(
   <Auth0Provider
     domain="dev-uj3eub3g6fo2poov.us.auth0.com"
     clientId="qkN0ZCwqn1V2mrt083FajexdFACUhIXq"
     authorizationParams={{
-      redirect_uri: window.location.origin
+      redirect_uri: window.location.origin,
     }}
   >
     <Provider store={store}>
       <ChakraProvider>
-        <StrictMode>
-          <App />
-        </StrictMode>
+        <ThemeProvider theme={theme}>
+          <StrictMode>
+            <App />
+          </StrictMode>
+        </ThemeProvider>
       </ChakraProvider>
     </Provider>
   </Auth0Provider>
