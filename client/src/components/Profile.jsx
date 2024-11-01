@@ -358,7 +358,7 @@ const UserProfile = () => {
                   key={order._id}
                 >
                   <p className="font-medium text-gray-800">Order #1234</p>
-                  <p className="text-gray-500">Date: 2024-10-01</p>
+                  <p className="text-gray-500">Date: {order.date}</p>
                   {order.cart.map((item) => {
                     return (
                       <div

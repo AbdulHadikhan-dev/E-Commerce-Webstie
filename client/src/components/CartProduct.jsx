@@ -11,13 +11,17 @@ import Radio from "@mui/material/Radio";
 
 import { useAuth0 } from "@auth0/auth0-react";
 
+import { useToast } from "@chakra-ui/react";
+
 const ShoppingCart = () => {
   const { user, isAuthenticated, loginWithRedirect } = useAuth0();
 
   const cart = useSelector((state) => state.cart.value);
   const dispatch = useDispatch();
+  const toast = useToast();
 
   console.log(cart);
+
   const [deliveryForm, setDeliveryForm] = useState({
     name: "",
     phone: "",
@@ -111,7 +115,7 @@ const ShoppingCart = () => {
           console.log(errors);
         }
         if (!errors.ok) return false;
-        if (isAuthenticated) {
+        if (!isAuthenticated) {
           if (cart.length === 0) {
             alert(
               "There is no product in cart, please must be add product on cart"
@@ -132,11 +136,20 @@ const ShoppingCart = () => {
                 promoCode,
                 cart,
                 totalPrice: total,
+                payMethod,
+                date: new Date(),
               }),
             }
           );
           let response = await postData.json();
-          alert(response.msg);
+          toast({
+            title: "Order Done Successfully",
+            description: "thanks for your order. order received in 2-3 days",
+            status: "success",
+            position: "top-right",
+            duration: 9000,
+            isClosable: true,
+          });
           if (response.ok) {
             dispatch(clearCart());
             setCreditCard({
@@ -166,7 +179,7 @@ const ShoppingCart = () => {
           console.log(errors2);
         }
         if (!errors2.ok) return false;
-        if (isAuthenticated) {
+        if (!isAuthenticated) {
           if (cart.length === 0) {
             alert(
               "There is no product in cart, please must be add product on cart"
@@ -186,11 +199,20 @@ const ShoppingCart = () => {
                 deliveryForm,
                 cart,
                 totalPrice: total,
+                payMethod,
+                date: new Date(),
               }),
             }
           );
           let response = await postData.json();
-          alert(response.msg);
+          toast({
+            title: "Order Done Successfully",
+            description: "thanks for your order. order received in 2-3 days",
+            status: "success",
+            position: "top-right",
+            duration: 9000,
+            isClosable: true,
+          });
           if (response.ok) {
             dispatch(clearCart());
             setDeliveryForm({
@@ -354,7 +376,7 @@ const ShoppingCart = () => {
         <div>
           <div className="payment-method flex-col gap-4">
             <h2 className="text-3xl font-semibold mb-4">Payment Method</h2>
-            <RadioGroup name="use-radio-group" defaultValue="Credit Card" >
+            <RadioGroup name="use-radio-group" defaultValue="Credit Card">
               <MyFormControlLabel
                 value="Cash on Delivery"
                 label="Cash on Delivery"
