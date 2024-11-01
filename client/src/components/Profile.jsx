@@ -251,7 +251,12 @@ const UserProfile = () => {
                   headers: {
                     "Content-Type": "application/json",
                   },
-                  body: JSON.stringify({ sub: user.sub, image }),
+                  body: JSON.stringify({
+                    sub: user.sub,
+                    image: URL.createObjectURL(
+                      e.target.files[e.target.files.length - 1]
+                    ),
+                  }),
                 }
               ).then(() => {
                 fetchUser();
