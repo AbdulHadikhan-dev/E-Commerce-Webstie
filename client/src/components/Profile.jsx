@@ -251,7 +251,7 @@ const UserProfile = () => {
                   headers: {
                     "Content-Type": "application/json",
                   },
-                  body: JSON.stringify({image}),
+                  body: JSON.stringify({ sub: user.sub, image }),
                 }
               ).then(() => {
                 fetchUser();

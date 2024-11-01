@@ -92,7 +92,12 @@ router.put("/update/user/:slug", async (req, res) => {
     let users = db.collection("users");
     for (let key in body) {
       console.log(key, body[key]);
-      await users.updateOne({ sub: body.sub }, { $set: { [key]: body[key] } });
+      if (key !== "sub") {
+        await users.updateOne(
+          { sub: body.sub },
+          { $set: { [key]: body[key] } }
+        );
+      }
     }
     // let updateUser  = await users.updateOne({sub: body.sub}, {name: body.name, location: body.location, bio: body.bio, address: body.address, contact: body.contact});
     let user = await users.findOne({ sub: body.sub });
