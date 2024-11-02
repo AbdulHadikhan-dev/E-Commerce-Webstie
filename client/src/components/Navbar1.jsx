@@ -156,7 +156,7 @@ const Navbar = ({ varients, icons, logo }) => {
                   type="button"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={(e) => { 
+                  onClick={(e) => {
                     if (
                       e.target.classList.contains(
                         "bg-indigo-100 text-indigo-800"
@@ -172,7 +172,7 @@ const Navbar = ({ varients, icons, logo }) => {
                       e.target.classList.remove("bg-gray-400");
                       e.target.classList.remove("text-gray-800");
                     }
-                    (location.href = `/results/search?q=${item.slug}`)
+                    location.href = `/results/search?q=${item.slug}`;
                   }}
                   className={`inline-flex items-center w-fit h-fit px-3 py-2 rounded-full text-sm font-medium`}
                 >
@@ -209,7 +209,7 @@ const Navbar = ({ varients, icons, logo }) => {
             // <Link to={"/login"}>
             <div
               className="profile max-lg:hidden"
-              onClick={() => loginWithRedirect("/cart")}
+              onClick={() => loginWithRedirect()}
             >
               <div className="user">
                 <MdLogin

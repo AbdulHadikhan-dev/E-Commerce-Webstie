@@ -61,7 +61,8 @@ const Hero = () => {
           <p className="text-xl sm:text-2xl md:text-3xl text-center mb-8">
             Shop the latest trends in fashion and accessories
           </p>
-          <Link to={'/results/search?q=all'}
+          <Link
+            to={"/results/search?q=all"}
             onClick={handleScrollToShop}
             className="bg-white text-black px-8 py-3 rounded-full text-lg font-semibold flex items-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-200"
           >
@@ -74,7 +75,7 @@ const Hero = () => {
           aria-hidden="true"
         ></div>
       </div>
-      
+
       <div className="product px-5 lg:px-12 mt-10">
         <div className="1">
           <div className="latest-product sm:text-lg md:text-xl lg:text-2xl xl:text-3xl">
@@ -84,12 +85,12 @@ const Hero = () => {
       </div>
       <div className="product-continer flex flex-wrap justify-between xl:justify-start gap-y-6 px-5 lg:px-12 mt-6">
         {products.map((product) => {
-          favoraites.forEach((item) => {
-            if (item.id === product.id) {
-              product.favorite = true;
-            }
-          });
-          console.log(product.favorite);
+          // favoraites.forEach((item) => {
+          //   if (item.id === product.id) {
+          //     product.favorite = true;
+          //   }
+          // });
+          // console.log(product.favorite);
           return (
             <Product
               key={product.id}
@@ -103,7 +104,7 @@ const Hero = () => {
               reviews={product.reviews}
               stock={product.stock}
               image={product.images[0]}
-              favorite={product.favorite}
+              // favorite={product.favorite}
             />
           );
         })}

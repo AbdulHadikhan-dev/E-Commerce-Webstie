@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { removeFavoriteProduct } from "../Redux/favoraiteSlice";
+import { removeItemFromWishList } from "../Redux/favoraiteSlice";
 import { FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
@@ -8,9 +8,11 @@ const WishList = () => {
   const dispatch = useDispatch();
 
   const handleDelete = (product) => {
-    dispatch(removeFavoriteProduct(product));
+    dispatch(removeItemFromWishList(product));
   };
+
   console.log(favorites);
+  
   return (
     <div className="mx-auto p-6 sm:p-8 lg:px-12 lg:py-8">
       <header className="flex flex-col sm:flex-row justify-between items-center mb-8">

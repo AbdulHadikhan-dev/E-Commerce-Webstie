@@ -11,7 +11,7 @@ export const counterSlice = createSlice({
     addToWishList: (state, action) => {
       state.value.push(action.payload);
     },
-    removeFavoriteProduct: (state, action) => {
+    removeItemFromWishList: (state, action) => {
       const newArr = state.value.filter((item) => {
         return item.id !== action.payload.id;
       });
@@ -21,6 +21,6 @@ export const counterSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { addToWishList, removeFavoriteProduct } = counterSlice.actions;
+export const { addToWishList, removeItemFromWishList } = counterSlice.actions;
 
 export default counterSlice.reducer;

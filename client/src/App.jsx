@@ -22,27 +22,25 @@ import { useSelector, useDispatch } from "react-redux";
 import { createdAdmin } from "./Redux/isAdminSlice";
 import NotFound from "./components/NotFound";
 
-import Error from "./alerts/Error";
-import Success from "./alerts/Succes";
-import Warning from "./alerts/Warning";
-import Info from "./alerts/Info";
-
 function App() {
-  const { user, isAuthenticated } = useAuth0();
+  const { user, isAuthenticated, loginWithRedirect } = useAuth0();
 
   const admin = useSelector((state) => state.admin.value);
   const dispatch = useDispatch();
 
   // console.log(user, "env",import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL);
-  
+
   const checkUser = async (user) => {
-    let request = await fetch(`${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/find/add`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ user, isAdmin: false }),
-    });
+    let request = await fetch(
+      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/find/add`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user, isAdmin: false }),
+      }
+    );
     let response = await request.json();
     console.log(response);
     if (response.findUser.isAdmin) {
@@ -52,8 +50,18 @@ function App() {
   };
 
   useEffect(() => {
+    if (localStorage.getItem("user")) {
+      loginWithRedirect();
+    }
     if (isAuthenticated) {
       checkUser(user);
+      if (
+        localStorage.getItem("user") === undefined ||
+        localStorage.getItem("user") === null
+      ) {
+        localStorage.setItem("user", JSON.stringify(user));
+        loginWithRedirect();
+      }
     }
   }, [isAuthenticated, user]);
 
