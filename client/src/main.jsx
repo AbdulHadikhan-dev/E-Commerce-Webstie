@@ -21,7 +21,7 @@ createRoot(document.getElementById("root")).render(
     domain="dev-uj3eub3g6fo2poov.us.auth0.com"
     clientId="qkN0ZCwqn1V2mrt083FajexdFACUhIXq"
     authorizationParams={{
-      redirect_uri: window.location.pathname,
+      redirect_uri: window.location.href,
     }}
   >
     <Provider store={store}>
