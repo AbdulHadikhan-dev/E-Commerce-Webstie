@@ -209,7 +209,10 @@ const Navbar = ({ varients, icons, logo }) => {
             // <Link to={"/login"}>
             <div
               className="profile max-lg:hidden"
-              onClick={() => loginWithRedirect()}
+              onClick={() => {
+                localStorage.setItem("isUserLoggedIn", true);
+                loginWithRedirect();
+              }}
             >
               <div className="user">
                 <MdLogin

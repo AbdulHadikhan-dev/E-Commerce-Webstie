@@ -51,30 +51,33 @@ function App() {
   };
 
   useEffect(() => {
-    // Check if the user is already authenticated
-    const savedUser = localStorage.getItem("user");
+    const authenticateUser = async () => {
+      // Check if the user is already logged in by looking at localStorage
+      const isUserLoggedIn = localStorage.getItem("isUserLoggedIn");
 
-    if (!isAuthenticated && savedUser) {
-      // Try silent authentication
-      getAccessTokenSilently()
-        .then(() => {
-          // If successful, set the user in localStorage
-          if (!localStorage.getItem("user")) {
+      if (isUserLoggedIn) {
+        try {
+          // Try to get a token silently to verify if the session is still active
+          await getAccessTokenSilently();
+          if (!localStorage.getItem("user") && user) {
+            // If the user is authenticated and not stored in localStorage, save them
             localStorage.setItem("user", JSON.stringify(user));
           }
-        })
-        .catch(() => {
-          // If silent authentication fails, redirect to login
+        } catch (error) {
+          console.error("Silent authentication failed:", error);
+          // If silent auth fails, clear the logged-in status and redirect to login
+          localStorage.removeItem("isUserLoggedIn");
+          localStorage.removeItem("user");
           loginWithRedirect();
-        });
-    } else if (isAuthenticated) {
-      // User is authenticated, save their details in localStorage
-      checkUser(user);
-      if (!localStorage.getItem("user")) {
-        localStorage.setItem("user", JSON.stringify(user));
+        }
+      } else if (!isAuthenticated) {
+        // If not logged in, do nothing. User remains logged out.
+        console.log("User is not logged in.");
       }
-    }
-  }, [isAuthenticated, user, getAccessTokenSilently, loginWithRedirect]);
+    };
+
+    authenticateUser();
+  }, [isAuthenticated, getAccessTokenSilently, loginWithRedirect, user]);
 
   const router = createBrowserRouter([
     {
