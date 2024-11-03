@@ -50,20 +50,18 @@ function App() {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("user") && !isAuthenticated) {
+    if (isAuthenticated) {
+      checkUser(user); // Call your custom function to check the user if needed
+  
+      if (!localStorage.getItem("user")) {
+        localStorage.setItem("user", JSON.stringify(user));
+        console.log("user saved successfully");
+      }
+    } else if (!localStorage.getItem("user")) {
       loginWithRedirect();
     }
-    if (isAuthenticated) {
-      checkUser(user);
-      if (
-        localStorage.getItem("user") === undefined ||
-        localStorage.getItem("user") === null
-      ) {
-        localStorage.setItem("user", JSON.stringify(user));
-        console.log("user saved successfully")
-      }
-    }
-  }, []);
+  }, [isAuthenticated, user, loginWithRedirect]); // Ensure dependencies are correct
+  
 
   const router = createBrowserRouter([
     {
