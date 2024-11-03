@@ -50,11 +50,7 @@ function App() {
   };
 
   useEffect(() => {
-    if (
-      (localStorage.getItem("user") !== undefined ||
-        localStorage.getItem("user") !== null) &&
-      !isAuthenticated
-    ) {
+    if (localStorage.getItem("user") && !isAuthenticated) {
       loginWithRedirect();
     }
     if (isAuthenticated) {
@@ -64,9 +60,10 @@ function App() {
         localStorage.getItem("user") === null
       ) {
         localStorage.setItem("user", JSON.stringify(user));
+        console.log("user saved successfully")
       }
     }
-  }, [isAuthenticated, user]);
+  }, []);
 
   const router = createBrowserRouter([
     {
