@@ -6,14 +6,20 @@ import React from "react";
 import { AiOutlineFundProjectionScreen } from "react-icons/ai";
 import { NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { MdLogin } from "react-icons/md";
 
 import HomeIcon from "@mui/icons-material/Home";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import PersonIcon from "@mui/icons-material/Person";
 
+import { useAuth0 } from "@auth0/auth0-react";
+
 const Navbar2 = ({ varients }) => {
   const admin = useSelector((state) => state.admin.value);
+
+  const { loginWithRedirect, isAuthenticated } = useAuth0();
+
   return (
     <>
       <nav
@@ -53,7 +59,7 @@ const Navbar2 = ({ varients }) => {
             <span className="text-sm">Favorite</span>
           </div>
         </NavLink>
-        {!admin && (
+        {!admin && isAuthenticated && (
           <NavLink
             to={"/profile"}
             className={({ isActive }) =>
@@ -65,6 +71,22 @@ const Navbar2 = ({ varients }) => {
               <span className="text-sm">Profile</span>
             </div>
           </NavLink>
+        )}
+        {!isAuthenticated && (
+          // <Link to={"/login"}>
+          <div
+            className="w-[25%]"
+            onClick={() => {
+              localStorage.setItem("isUserLoggedIn", true);
+              loginWithRedirect();
+            }}
+          >
+            <div className="profile flex flex-col gap-1 cursor-pointer font-semibold hover:text-black text-[#6C7278] duration-500  items-center justify-center">
+              <MdLogin className={`h-9 w-9 cursor-pointer`} />
+              <span className="text-sm">Login</span>
+            </div>
+          </div>
+          // </Link>
         )}
         {admin && (
           <NavLink to={"/dashboard"} className="w-[25%]">

@@ -73,6 +73,8 @@ function App() {
       } else if (!isAuthenticated) {
         // If not logged in, do nothing. User remains logged out.
         console.log("User is not logged in.");
+      } else if (isAuthenticated) {
+        checkUser(user);
       }
     };
 

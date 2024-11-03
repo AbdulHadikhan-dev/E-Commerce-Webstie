@@ -11,9 +11,9 @@ const Search = () => {
   const search = useSelector((state) => state.search.value);
   const favoraites = useSelector((state) => state.favorites.value);
   const dispatch = useDispatch();
+  // const [fetchToOrigin, setFetchToOrigin] = useState(window.location.href);
 
-  const queryParameters = new URLSearchParams(window.location.search);
-  const q = queryParameters.get("q");
+
   const [totalProducts, setTotalProducts] = useState(0);
   const cateogoryArray = useRef([
     "beauty",
@@ -42,14 +42,17 @@ const Search = () => {
     "womens-watches",
   ]);
   let cateogory = useRef(false);
-
+  
   useEffect(() => {
+    const queryParameters = new URLSearchParams(window.location.search);
+    const q = queryParameters.get("q");
     dispatch(change(q));
     cateogoryArray.current.forEach((item) => {
       if (item === q) {
         cateogory.current = true;
       }
     });
+    
     if (cateogory.current === true) {
       fetch(`https://dummyjson.com/products/category/${q}`)
         .then((res) => res.json())
@@ -69,6 +72,7 @@ const Search = () => {
           setTotalProducts(data.products.length);
         });
     }
+    
   }, []);
 
   return (
