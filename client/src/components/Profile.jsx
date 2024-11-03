@@ -308,8 +308,8 @@ const UserProfile = () => {
           <button
             className="flex items-center bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 py-3 rounded-lg shadow-md hover:from-gray-700 hover:to-gray-800 transition duration-300"
             onClick={() => {
-              logout({ logoutParams: { returnTo: window.location.origin } });
               localStorage.removeItem("user");
+              logout({ logoutParams: { returnTo: window.location.origin } });
             }}
           >
             <FaSignOutAlt className="mr-2" />

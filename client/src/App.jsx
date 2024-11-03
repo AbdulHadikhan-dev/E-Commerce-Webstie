@@ -23,7 +23,8 @@ import { createdAdmin } from "./Redux/isAdminSlice";
 import NotFound from "./components/NotFound";
 
 function App() {
-  const { user, isAuthenticated, loginWithRedirect } = useAuth0();
+  const { isAuthenticated, loginWithRedirect, user, getAccessTokenSilently } =
+    useAuth0();
 
   const admin = useSelector((state) => state.admin.value);
   const dispatch = useDispatch();
@@ -50,18 +51,30 @@ function App() {
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      checkUser(user); // Call your custom function to check the user if needed
-  
+    // Check if the user is already authenticated
+    const savedUser = localStorage.getItem("user");
+
+    if (!isAuthenticated && savedUser) {
+      // Try silent authentication
+      getAccessTokenSilently()
+        .then(() => {
+          // If successful, set the user in localStorage
+          if (!localStorage.getItem("user")) {
+            localStorage.setItem("user", JSON.stringify(user));
+          }
+        })
+        .catch(() => {
+          // If silent authentication fails, redirect to login
+          loginWithRedirect();
+        });
+    } else if (isAuthenticated) {
+      // User is authenticated, save their details in localStorage
+      checkUser(user);
       if (!localStorage.getItem("user")) {
         localStorage.setItem("user", JSON.stringify(user));
-        console.log("user saved successfully");
       }
-    } else if (!localStorage.getItem("user")) {
-      loginWithRedirect();
     }
-  }, [isAuthenticated, user, loginWithRedirect]); // Ensure dependencies are correct
-  
+  }, [isAuthenticated, user, getAccessTokenSilently, loginWithRedirect]);
 
   const router = createBrowserRouter([
     {
