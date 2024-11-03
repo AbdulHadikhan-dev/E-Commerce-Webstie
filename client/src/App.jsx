@@ -50,7 +50,10 @@ function App() {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("user")) {
+    if (
+      localStorage.getItem("user") !== undefined ||
+      localStorage.getItem("user") !== null
+    ) {
       loginWithRedirect();
     }
     if (isAuthenticated) {
@@ -60,7 +63,6 @@ function App() {
         localStorage.getItem("user") === null
       ) {
         localStorage.setItem("user", JSON.stringify(user));
-        loginWithRedirect();
       }
     }
   }, [isAuthenticated, user]);
