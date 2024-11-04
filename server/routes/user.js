@@ -33,7 +33,7 @@ router.post("/find/add", async (req, res) => {
   } else {
     if (
       !body.user.email ||
-      !body.isAdmin ||
+      body.isAdmin === undefined ||
       !body.user.email_verified ||
       !body.user.family_name ||
       !body.user.name ||
