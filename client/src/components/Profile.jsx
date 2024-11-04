@@ -48,11 +48,9 @@ const UserProfile = () => {
       `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/${user.sub}`
     )
       .then((res) => res.json())
-      .then((user) => {
-        console.log(user);
-        setUser(user);
-      })
       .then((data) => {
+        console.log(data);
+        setUser(data);
         setAddDetails({
           ...addDetails,
           sub: user.sub,
