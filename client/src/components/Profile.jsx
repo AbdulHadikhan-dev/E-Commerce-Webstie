@@ -26,7 +26,7 @@ const UserProfile = () => {
     sub: "",
   });
 
-  const [image, setimage] = useState("");
+  const [image, setImage] = useState("");
   console.log(user);
 
   const fetchOrders = () => {
@@ -56,13 +56,15 @@ const UserProfile = () => {
         setAddDetails({
           ...addDetails,
           sub: User.sub,
-          bio: User.bio ? User.bio : "",
-          location: User.location ? User.location : "",
-          address: User.address ? User.address : "",
-          contact: User.contact ? User.contact : "",
-          name: User.name ? User.name : "",
+          bio: User.bio,
+          location: User.location,
+          address: User.address,
+          contact: User.contact,
+          name: User.name,
         });
-        setimage(user.image);
+        console.log(addDetails, `user ${User}`);
+
+        setImage(User.image);
       })
       .catch((error) => console.error("Error fetching orders:", error));
   };
@@ -83,7 +85,7 @@ const UserProfile = () => {
     setAddDetails({ ...addDetails, [e.target.name]: e.target.value });
   };
 
-  const handleDeleteAccount = (e) => {
+  const handleDeleteAccount = () => {
     fetch(
       `${
         import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
@@ -267,7 +269,7 @@ const UserProfile = () => {
                 e.target.files,
                 URL.createObjectURL(e.target.files[0])
               );
-              setimage(
+              setImage(
                 URL.createObjectURL(e.target.files[e.target.files.length - 1])
               );
               fetch(
