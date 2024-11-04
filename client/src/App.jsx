@@ -56,6 +56,7 @@ function App() {
       const isUserLoggedIn = localStorage.getItem("isUserLoggedIn");
 
       if (isUserLoggedIn) {
+        checkUser(user);
         try {
           // Try to get a token silently to verify if the session is still active
           await getAccessTokenSilently();
