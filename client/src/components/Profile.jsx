@@ -71,6 +71,7 @@ const UserProfile = (
         body: JSON.stringify({ sub: user.sub }),
       }
     ).then(() => {
+      localStorage.removeItem("user");
       logout({ logoutParams: { returnTo: window.location.origin } });
     });
   };

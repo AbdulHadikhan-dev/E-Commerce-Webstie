@@ -91,8 +91,8 @@ function App() {
       localStorage.getItem("user") !== null &&
       localStorage.getItem("user")
     ) {
-      fetchUser(localStorage.getItem("user"));
-      checkUser(localStorage.getItem("user"));
+      fetchUser(JSON.parse(localStorage.getItem("user")));
+      checkUser(JSON.parse(localStorage.getItem("user")));
       dispatch(Login());
     }
     if (isAuthenticated) {
