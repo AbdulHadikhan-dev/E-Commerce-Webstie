@@ -52,19 +52,18 @@ const UserProfile = () => {
         console.log(user);
         setUser(user);
       })
-      .then((user) => {
+      .then((data) => {
         setAddDetails({
           ...addDetails,
-          sub: user.sub ? user.sub : "",
-          bio: user.bio ? user.bio : "",
-          location: user.location ? user.location : "",
-          address: user.address ? user.address : "",
-          contact: user.contact ? user.contact : "",
-          name: user.name ? user.name : "",
+          sub: user.sub,
+          bio: data.bio ? data.bio : "",
+          location: data.location ? data.location : "",
+          address: data.address ? data.address : "",
+          contact: data.contact ? data.contact : "",
+          name: data.name ? data.name : "",
         });
-        console.log(addDetails, `user ${User}`);
-
-        setImage(user.image);
+        console.log(addDetails);
+        setImage(data.image);
       })
       .catch((error) => console.error("Error fetching orders:", error));
   };
