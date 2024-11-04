@@ -17,6 +17,8 @@ const ShoppingCart = () => {
   const { user, isAuthenticated, loginWithRedirect } = useAuth0();
 
   const cart = useSelector((state) => state.cart.value);
+  const authenticated = useSelector((state) => state.authenticated.value);
+
   const dispatch = useDispatch();
   const toast = useToast();
 
@@ -115,7 +117,7 @@ const ShoppingCart = () => {
           console.log(errors);
         }
         if (!errors.ok) return false;
-        if (!isAuthenticated) {
+        if (!authenticated) {
           if (cart.length === 0) {
             alert(
               "There is no product in cart, please must be add product on cart"
@@ -179,7 +181,7 @@ const ShoppingCart = () => {
           console.log(errors2);
         }
         if (!errors2.ok) return false;
-        if (!isAuthenticated) {
+        if (!authenticated) {
           if (cart.length === 0) {
             alert(
               "There is no product in cart, please must be add product on cart"

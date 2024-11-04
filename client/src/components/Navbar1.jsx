@@ -19,6 +19,8 @@ import { Link } from "react-router-dom";
 const Navbar = ({ varients, icons, logo }) => {
   const search = useSelector((state) => state.search.value);
   const admin = useSelector((state) => state.admin.value);
+  const authenticated = useSelector((state) => state.authenticated.value);
+
   const dispatch = useDispatch();
   const [suggestions, setsuggestions] = useState([]);
 
@@ -194,7 +196,7 @@ const Navbar = ({ varients, icons, logo }) => {
               </div>
             </Link>
           </div>
-          {isAuthenticated && (
+          {authenticated && (
             <Link to={"/profile"}>
               <div className="profile max-lg:hidden">
                 <div className="user">
@@ -205,12 +207,11 @@ const Navbar = ({ varients, icons, logo }) => {
               </div>
             </Link>
           )}
-          {!isAuthenticated && (
+          {!authenticated && (
             // <Link to={"/login"}>
             <div
               className="profile max-lg:hidden"
               onClick={() => {
-                localStorage.setItem("isUserLoggedIn", true);
                 loginWithRedirect();
               }}
             >
@@ -222,7 +223,7 @@ const Navbar = ({ varients, icons, logo }) => {
             </div>
             // </Link>
           )}
-          {admin && (
+          {authenticated && (
             <Link to={"/dashboard"}>
               <div className="profile max-lg:hidden">
                 <div className="user">

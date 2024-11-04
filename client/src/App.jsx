@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Navbar1 from "./components/Navbar1";
 import Navbar2 from "./components/Navbar2";
@@ -20,15 +20,27 @@ import AdminDashboard from "./components/Dashboard";
 
 import { useSelector, useDispatch } from "react-redux";
 import { createdAdmin } from "./Redux/isAdminSlice";
-import NotFound from "./components/NotFound";
+// import NotFound from "./components/NotFound";
+
+import { Login } from "./Redux/authenticated";
 
 function App() {
-  const { isAuthenticated, loginWithRedirect, user, getAccessTokenSilently } =
-    useAuth0();
+  const { isAuthenticated, user } = useAuth0();
 
   const admin = useSelector((state) => state.admin.value);
   const dispatch = useDispatch();
 
+  const [User, setUser] = useState(null);
+  const [addDetails, setAddDetails] = useState({
+    name: "",
+    location: "",
+    bio: "",
+    contact: "",
+    address: "",
+    sub: "",
+  });
+
+  const [image, setImage] = useState("");
   // console.log(user, "env",import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL);
 
   const checkUser = async (user) => {
@@ -50,37 +62,43 @@ function App() {
     }
   };
 
+  const fetchUser = (user) => {
+    fetch(
+      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/${user.sub}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setUser(data);
+        setAddDetails({
+          ...addDetails,
+          sub: user.sub,
+          bio: data.bio ? data.bio : "",
+          location: data.location ? data.location : "",
+          address: data.address ? data.address : "",
+          contact: data.contact ? data.contact : "",
+          name: data.name ? data.name : "",
+        });
+        console.log(addDetails);
+        setImage(data.image);
+      })
+      .catch((error) => console.error("Error fetching orders:", error));
+  };
+
   useEffect(() => {
-    const authenticateUser = async () => {
-      // Check if the user is already logged in by looking at localStorage
-      const isUserLoggedIn = localStorage.getItem("isUserLoggedIn");
-
-      if (isUserLoggedIn) {
-        checkUser(user);
-        try {
-          // Try to get a token silently to verify if the session is still active
-          await getAccessTokenSilently();
-          if (!localStorage.getItem("user") && user) {
-            // If the user is authenticated and not stored in localStorage, save them
-            localStorage.setItem("user", JSON.stringify(user));
-          }
-        } catch (error) {
-          console.error("Silent authentication failed:", error);
-          // If silent auth fails, clear the logged-in status and redirect to login
-          localStorage.removeItem("isUserLoggedIn");
-          localStorage.removeItem("user");
-          loginWithRedirect();
-        }
-      } else if (!isAuthenticated) {
-        // If not logged in, do nothing. User remains logged out.
-        console.log("User is not logged in.");
-      } else if (isAuthenticated) {
-        checkUser(user);
-      }
-    };
-
-    authenticateUser();
-  }, [isAuthenticated, getAccessTokenSilently, loginWithRedirect, user]);
+    if (
+      localStorage.getItem("user") !== undefined &&
+      localStorage.getItem("user") !== null &&
+      localStorage.getItem("user")
+    ) {
+      fetchUser(localStorage.getItem("user"));
+      checkUser(localStorage.getItem("user"));
+      dispatch(Login());
+    }
+    if (isAuthenticated) {
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+  }, [isAuthenticated, user]);
 
   const router = createBrowserRouter([
     {
@@ -141,7 +159,15 @@ function App() {
         <ChakraProvider>
           <main>
             {/* <Navbar1 icons={"text-gray-500"} /> */}
-            <Profile />
+            <Profile
+              User={User}
+              setUser={setUser}
+              addDetails={addDetails}
+              setAddDetails={setAddDetails}
+              image={image}
+              setImage={setImage}
+              fetchUser={fetchUser}
+            />
             <Footer />
             <Navbar2 varients="fixed bottom-0" />
           </main>
@@ -174,7 +200,10 @@ function App() {
       path: "/dashboard",
       element: (
         <ChakraProvider>
-          <main>{!admin ? <AdminDashboard /> : <NotFound />}</main>,
+          <main>
+            <AdminDashboard />
+          </main>
+          ,
         </ChakraProvider>
       ),
     },

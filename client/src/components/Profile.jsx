@@ -12,29 +12,28 @@ import { IoCameraOutline } from "react-icons/io5";
 
 import { useAuth0 } from "@auth0/auth0-react";
 
-const UserProfile = () => {
+import { useSelector, useDispatch } from "react-redux";
+import { Login } from "../Redux/authenticated";
+
+const UserProfile = (
+  User,
+  setUser,
+  addDetails,
+  setAddDetails,
+  image,
+  setImage,
+  fetchUser
+) => {
   const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const [orders, setOrders] = useState([]);
-  const [User, setUser] = useState({});
-
-  const [addDetails, setAddDetails] = useState({
-    name: "",
-    location: "",
-    bio: "",
-    contact: "",
-    address: "",
-    sub: "",
-  });
-
-  const [image, setImage] = useState("");
-  console.log(user);
+  const authenticated = useSelector((state) => state.authenticated.value);
 
   const fetchOrders = () => {
     // Fetch orders from backend API
     fetch(
       `${
         import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
-      }/api/order/find?user_id=${user.sub}`
+      }/api/order/find?user_id=${User.sub}`
     )
       .then((res) => res.json())
       .then((orders) => {
@@ -43,32 +42,9 @@ const UserProfile = () => {
       })
       .catch((error) => console.error("Error fetching orders:", error));
   };
-  const fetchUser = () => {
-    fetch(
-      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/${user.sub}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setUser(data);
-        setAddDetails({
-          ...addDetails,
-          sub: user.sub,
-          bio: data.bio ? data.bio : "",
-          location: data.location ? data.location : "",
-          address: data.address ? data.address : "",
-          contact: data.contact ? data.contact : "",
-          name: data.name ? data.name : "",
-        });
-        console.log(addDetails);
-        setImage(data.image);
-      })
-      .catch((error) => console.error("Error fetching orders:", error));
-  };
 
   useEffect(() => {
     fetchOrders();
-    fetchUser();
   }, []);
 
   const handleAddDetails = () => {
@@ -117,7 +93,7 @@ const UserProfile = () => {
     });
   };
 
-  return isAuthenticated ? (
+  return authenticated ? (
     <div className="min-h-screen bg-gray-100 flex justify-center md:py-10">
       <div className="black absolute top-0 h-full w-full z-[60] bg-black bg-opacity-20 hidden"></div>
       <div
@@ -262,13 +238,6 @@ const UserProfile = () => {
             id="uplode"
             className="hidden"
             onChange={(e) => {
-              console.log(
-                e.target.files,
-                URL.createObjectURL(e.target.files[0])
-              );
-              setImage(
-                URL.createObjectURL(e.target.files[e.target.files.length - 1])
-              );
               fetch(
                 `${
                   import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
@@ -279,7 +248,7 @@ const UserProfile = () => {
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    sub: user.sub,
+                    sub: User.sub,
                     image: URL.createObjectURL(
                       e.target.files[e.target.files.length - 1]
                     ),
@@ -288,6 +257,9 @@ const UserProfile = () => {
               ).then(() => {
                 fetchUser();
               });
+              setImage(
+                URL.createObjectURL(e.target.files[e.target.files.length - 1])
+              );
             }}
           />
         </div>
