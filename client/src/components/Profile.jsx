@@ -51,7 +51,18 @@ const UserProfile = () => {
       .then((user) => {
         console.log(user);
         setUser(user);
-        setAddDetails({ ...addDetails, sub: user.sub });
+      })
+      .then(() => {
+        setAddDetails({
+          ...addDetails,
+          sub: User.sub,
+          bio: User.bio ? User.bio : "",
+          location: User.location ? User.location : "",
+          address: User.address ? User.address : "",
+          contact: User.contact ? User.contact : "",
+          name: User.name ? User.name : "",
+        });
+        setimage(user.image);
       })
       .catch((error) => console.error("Error fetching orders:", error));
   };
@@ -70,6 +81,23 @@ const UserProfile = () => {
 
   const handleChange = (e) => {
     setAddDetails({ ...addDetails, [e.target.name]: e.target.value });
+  };
+
+  const handleDeleteAccount = (e) => {
+    fetch(
+      `${
+        import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
+      }/api/user/delete/account/${user.sub}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ sub: user.sub }),
+      }
+    ).then(() => {
+      logout({ logoutParams: { returnTo: window.location.origin } });
+    });
   };
 
   const handleSetDetail = () => {
@@ -201,7 +229,7 @@ const UserProfile = () => {
               onChange={handleChange}
               rows="3"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-              placeholder="Your Shipping Address"
+              placeholder="Your Shipping Address Street Address"
             ></textarea>
           </div>
 
@@ -301,7 +329,10 @@ const UserProfile = () => {
             <FaEdit className="mr-2" />
             Edit Profile
           </button>
-          <button className="flex items-center bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-lg shadow-md hover:from-red-600 hover:to-red-700 transition duration-300">
+          <button
+            className="flex items-center bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-lg shadow-md hover:from-red-600 hover:to-red-700 transition duration-300"
+            onClick={handleDeleteAccount}
+          >
             <FaTrash className="mr-2" />
             Delete Account
           </button>
@@ -309,7 +340,7 @@ const UserProfile = () => {
             className="flex items-center bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 py-3 rounded-lg shadow-md hover:from-gray-700 hover:to-gray-800 transition duration-300"
             onClick={() => {
               localStorage.removeItem("isUserLoggedIn");
-    localStorage.removeItem("user");
+              localStorage.removeItem("user");
               logout({ logoutParams: { returnTo: window.location.origin } });
             }}
           >

@@ -173,7 +173,7 @@ function App() {
       path: "/dashboard",
       element: (
         <ChakraProvider>
-          <main>{admin ? <AdminDashboard /> : <NotFound />}</main>,
+          <main>{!admin ? <AdminDashboard /> : <NotFound />}</main>,
         </ChakraProvider>
       ),
     },

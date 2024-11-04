@@ -4,13 +4,13 @@ import { motion } from "framer-motion";
 
 const AddProductPage = ({ darkMode }) => {
   const [formData, setFormData] = useState({
-    name: "",
+    title: "",
     description: "",
     price: "",
     brand: "",
     stock: "",
-    colors: [],
-    sizes: [],
+    rating: "",
+    discountPercentage: "",
     categories: [],
     images: [],
   });
@@ -46,9 +46,9 @@ const AddProductPage = ({ darkMode }) => {
   const validateField = (name, value) => {
     let newErrors = { ...errors };
     switch (name) {
-      case "name":
-        if (!value.trim()) newErrors.name = "Product name is required";
-        else delete newErrors.name;
+      case "title":
+        if (!value.trim()) newErrors.title = "Product name is required";
+        else delete newErrors.title;
         break;
       case "price":
         if (!value || isNaN(parseFloat(value))) {
@@ -60,6 +60,27 @@ const AddProductPage = ({ darkMode }) => {
           newErrors.quantity = "Please enter a valid quantity";
         } else delete newErrors.quantity;
         break;
+      case "rating":
+        if (!value || isNaN(parseFloat(value))) {
+          newErrors.rating = "Please enter a valid rating value";
+        } else delete newErrors.rating;
+        break;
+      case "discountPercentage":
+        if (!value || isNaN(parseFloat(value))) {
+          newErrors.discountPercentage =
+            "Please enter a valid discountPercentage";
+        } else delete newErrors.discountPercentage;
+        break;
+      case "stock":
+        if (!value || isNaN(parseFloat(value))) {
+          newErrors.stock = "Please enter a valid stock value";
+        } else delete newErrors.stock;
+        break;
+      case "brand":
+        if (!value.trim()) {
+          newErrors.brand = "Please enter a valid brand";
+        } else delete newErrors.brand;
+        break;
       default:
         break;
     }
@@ -68,17 +89,24 @@ const AddProductPage = ({ darkMode }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Perform final validation and submit
-    // fetch("https://dummyjson.com/products/add", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({
-    //     title: "BMW Pencil",
-    //     /* other product data */
-    //   }),
-    // })
-    //   .then((res) => res.json())
-    //   .then(console.log);
+    if (
+      errors.title ||
+      errors.price ||
+      errors.quantity ||
+      errors.stock ||
+      errors.rating ||
+      errors.discountPercentage ||
+      errors.brand
+    ) {
+      return false;
+    }
+    fetch("https://dummyjson.com/products/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    })
+      .then((res) => res.json())
+      .then((res) => console.log("response", res));
     console.log("Form submitted:", formData);
   };
 
@@ -93,7 +121,7 @@ const AddProductPage = ({ darkMode }) => {
             <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
               <div>
                 <label
-                  htmlFor="name"
+                  htmlFor="title"
                   className="block text-sm font-medium text-gray-700"
                 >
                   Product Name
@@ -101,16 +129,16 @@ const AddProductPage = ({ darkMode }) => {
                 <div className="mt-1">
                   <input
                     type="text"
-                    name="name"
-                    id="name"
-                    value={formData.name}
+                    name="title"
+                    id="title"
+                    value={formData.title}
                     onChange={handleChange}
                     className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                      errors.name ? "border-red-500" : ""
+                      errors.title ? "border-red-500" : ""
                     } py-1`}
                   />
-                  {errors.name && (
-                    <p className="mt-2 text-sm text-red-600">{errors.name}</p>
+                  {errors.title && (
+                    <p className="mt-2 text-sm text-red-600">{errors.title}</p>
                   )}
                 </div>
               </div>
@@ -148,7 +176,7 @@ const AddProductPage = ({ darkMode }) => {
 
               <div>
                 <label
-                  htmlFor="quantity"
+                  htmlFor="brand"
                   className="block text-sm font-medium text-gray-700"
                 >
                   Brand
@@ -156,20 +184,22 @@ const AddProductPage = ({ darkMode }) => {
                 <div className="mt-1">
                   <input
                     type="text"
-                    name="barnd"
-                    id="barnd"
+                    name="brand"
+                    id="brand"
                     value={formData.brand}
                     onChange={handleChange}
                     className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md text-black ${
                       errors.brand ? "border-red-500" : ""
                     } py-1`}
                   />
-                
+                  {errors.brand && (
+                    <p className="mt-2 text-sm text-red-600">{errors.brand}</p>
+                  )}
                 </div>
               </div>
               <div>
                 <label
-                  htmlFor="quantity"
+                  htmlFor="stock"
                   className="block text-sm font-medium text-gray-700"
                 >
                   Stock
@@ -185,46 +215,58 @@ const AddProductPage = ({ darkMode }) => {
                       errors.stock ? "border-red-500" : ""
                     } py-1`}
                   />
+                  {errors.stock && (
+                    <p className="mt-2 text-sm text-red-600">{errors.stock}</p>
+                  )}
                 </div>
               </div>
               <div>
                 <label
-                  htmlFor="quantity"
+                  htmlFor="discountPercentage
+"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Colors (Optional)
+                  Discount Percentage
                 </label>
                 <div className="mt-1">
                   <input
                     type="number"
-                    name="color"
-                    id="color"
-                    value={formData.colors}
+                    name="discountPercentage"
+                    id="discountPercentage"
+                    value={formData.discountPercentage}
                     onChange={handleChange}
                     className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm py-1 border-gray-300 rounded-md text-black ${
-                      errors.colors ? "border-red-500" : ""
+                      errors.discountPercentage ? "border-red-500" : ""
                     }`}
                   />
+                  {errors.discountPercentage && (
+                    <p className="mt-2 text-sm text-red-600">
+                      {errors.discountPercentage}
+                    </p>
+                  )}
                 </div>
               </div>
               <div>
                 <label
-                  htmlFor="sizes"
+                  htmlFor="rating"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Sizes (Optional)
+                  Rating
                 </label>
                 <div className="mt-1">
                   <input
-                    type="text"
-                    name="size"
-                    id="size"
-                    value={formData.sizes}
+                    type="number"
+                    name="rating"
+                    id="rating"
+                    value={formData.rating}
                     onChange={handleChange}
                     className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md text-black ${
-                      errors.sizes ? "border-red-500" : ""
+                      errors.rating ? "border-red-500" : ""
                     } py-1`}
                   />
+                  {errors.rating && (
+                    <p className="mt-2 text-sm text-red-600">{errors.rating}</p>
+                  )}
                 </div>
               </div>
               <div>

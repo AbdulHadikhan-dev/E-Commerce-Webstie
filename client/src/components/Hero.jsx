@@ -12,7 +12,7 @@ const Hero = () => {
     // const url = "http://localhost:3005/product/all";
     // const response = await fetch(url);
     // let r = await response.json();
-    fetch("https://dummyjson.com/products?limit=129")
+    fetch("https://dummyjson.com/products?limit=195")
       .then((res) => res.json())
       .then((data) => {
         setProducts(data.products);
