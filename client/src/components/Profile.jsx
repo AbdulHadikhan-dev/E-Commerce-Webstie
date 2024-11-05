@@ -87,6 +87,7 @@ const UserProfile = ({
         import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
       }/api/user/update/user/addDetails/`,
       {
+        mode: 'no-cors',
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -258,6 +259,7 @@ const UserProfile = ({
                   import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
                 }/api/user/update/user/cover`,
                 {
+                  mode: 'no-cors',
                   method: "PUT",
                   headers: {
                     "Content-Type": "application/json",
