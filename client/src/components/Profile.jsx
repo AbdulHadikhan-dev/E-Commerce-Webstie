@@ -24,16 +24,17 @@ const UserProfile = ({
   setImage,
   fetchUser,
 }) => {
-  const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { logout } = useAuth0();
   const [orders, setOrders] = useState([]);
-  const authenticated = useSelector((state) => state.authenticated.value);
+  // const authenticated = useSelector((state) => state.authenticated.value);
 
   const fetchOrders = () => {
     // Fetch orders from backend API
     fetch(
       `${
         import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
-      }/api/order/find?user_id=${User.sub}`
+      }/api/order/find?user_id=${User.sub}`,
+      { mode: "no-cors" }
     )
       .then((res) => res.json())
       .then((orders) => {

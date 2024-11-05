@@ -48,6 +48,7 @@ function App() {
     let request = await fetch(
       `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/find/add`,
       {
+        mode: "no-cors",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +66,8 @@ function App() {
 
   const fetchUser = (user) => {
     fetch(
-      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/${user.sub}`
+      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/${user.sub}`,
+      { mode: "no-cors" }
     )
       .then((res) => res.json())
       .then((data) => {
@@ -92,12 +94,12 @@ function App() {
       localStorage.getItem("user") !== null &&
       localStorage.getItem("user")
     ) {
-      let user = JSON.parse(localStorage.getItem("user")) 
-      console.log("user from local storage",user);
-      
+      let user = JSON.parse(localStorage.getItem("user"));
+      console.log("user from local storage", user);
+
       fetchUser(user);
       checkUser(user);
-      
+
       console.log(user);
       dispatch(Login());
     }
@@ -164,20 +166,24 @@ function App() {
       path: "/profile",
       element: (
         <ChakraProvider>
-          {authenticated ? <main>
-            {/* <Navbar1 icons={"text-gray-500"} /> */}
-            <Profile
-              User={User}
-              setUser={setUser}
-              addDetails={addDetails}
-              setAddDetails={setAddDetails}
-              image={image}
-              setImage={setImage}
-              fetchUser={fetchUser}
-            />
-            <Footer />
-            <Navbar2 varients="fixed bottom-0" />
-          </main>: <button onClick={loginWithRedirect}>Login</button>}
+          {authenticated ? (
+            <main>
+              {/* <Navbar1 icons={"text-gray-500"} /> */}
+              <Profile
+                User={User}
+                setUser={setUser}
+                addDetails={addDetails}
+                setAddDetails={setAddDetails}
+                image={image}
+                setImage={setImage}
+                fetchUser={fetchUser}
+              />
+              <Footer />
+              <Navbar2 varients="fixed bottom-0" />
+            </main>
+          ) : (
+            <button onClick={loginWithRedirect}>Login</button>
+          )}
         </ChakraProvider>
       ),
     },
@@ -207,10 +213,7 @@ function App() {
       path: "/dashboard",
       element: (
         <ChakraProvider>
-          <main>
-            {authenticated && <AdminDashboard />}
-          </main>
-          ,
+          <main>{authenticated && <AdminDashboard />}</main>,
         </ChakraProvider>
       ),
     },
