@@ -15,15 +15,15 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useSelector, useDispatch } from "react-redux";
 // import { Login } from "../Redux/authenticated";
 
-const UserProfile = (
+const UserProfile = ({
   User,
   setUser,
   addDetails,
   setAddDetails,
   image,
   setImage,
-  fetchUser
-) => {
+  fetchUser,
+}) => {
   const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const [orders, setOrders] = useState([]);
   const authenticated = useSelector((state) => state.authenticated.value);
@@ -43,14 +43,16 @@ const UserProfile = (
       .catch((error) => console.error("Error fetching orders:", error));
   };
 
+  // console.log("user from userState", User);
+
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [User]);
 
   const handleAddDetails = () => {
-    let addDetails = document.querySelector(".add-details");
+    let addDetail = document.querySelector(".add-details");
     let black = document.querySelector(".black");
-    addDetails.classList.remove("hidden");
+    addDetail.classList.remove("hidden");
     black.classList.remove("hidden");
   };
 
@@ -62,13 +64,13 @@ const UserProfile = (
     fetch(
       `${
         import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
-      }/api/user/delete/account/${user.sub}`,
+      }/api/user/delete/account/${User.sub}`,
       {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ sub: user.sub }),
+        body: JSON.stringify({ sub: User.sub }),
       }
     ).then(() => {
       localStorage.removeItem("user");
@@ -76,12 +78,13 @@ const UserProfile = (
     });
   };
 
-  const handleSetDetail = () => {
+  const handleSetDetail = (e) => {
+    e.preventDefault();
     console.log(addDetails);
     fetch(
       `${
         import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
-      }/api/user/update/user/addDetails`,
+      }/api/user/update/user/addDetails/`,
       {
         method: "PUT",
         headers: {
@@ -89,12 +92,19 @@ const UserProfile = (
         },
         body: JSON.stringify(addDetails),
       }
-    ).then(() => {
-      fetchUser();
-    });
+    )
+      .then(() => {
+        fetchUser(JSON.parse(localStorage.getItem("user")));
+      })
+      .then(() => {
+        let addDetail = document.querySelector(".add-details");
+        let black = document.querySelector(".black");
+        addDetail.classList.add("hidden");
+        black.classList.add("hidden");
+      });
   };
 
-  return authenticated ? (
+  return (
     <div className="min-h-screen bg-gray-100 flex justify-center md:py-10">
       <div className="black absolute top-0 h-full w-full z-[60] bg-black bg-opacity-20 hidden"></div>
       <div
@@ -108,9 +118,9 @@ const UserProfile = (
           <RxCross2
             className="absolute top-8 right-8 cursor-pointer scale-150"
             onClick={() => {
-              let addDetails = document.querySelector(".add-details");
+              let addDetail = document.querySelector(".add-details");
               let black = document.querySelector(".black");
-              addDetails.classList.add("hidden");
+              addDetail.classList.add("hidden");
               black.classList.add("hidden");
             }}
           />
@@ -239,6 +249,9 @@ const UserProfile = (
             id="uplode"
             className="hidden"
             onChange={(e) => {
+              setImage(
+                URL.createObjectURL(e.target.files[e.target.files.length - 1])
+              );
               fetch(
                 `${
                   import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
@@ -250,17 +263,16 @@ const UserProfile = (
                   },
                   body: JSON.stringify({
                     sub: User.sub,
-                    image: URL.createObjectURL(
-                      e.target.files[e.target.files.length - 1]
-                    ),
+                    image,
                   }),
                 }
-              ).then(() => {
-                fetchUser();
-              });
-              setImage(
-                URL.createObjectURL(e.target.files[e.target.files.length - 1])
-              );
+              )
+                .then((res) => {
+                  res.json();
+                })
+                .then((data) => {
+                  setUser(data);
+                });
             }}
           />
         </div>
@@ -282,11 +294,11 @@ const UserProfile = (
               {User.name}
             </h1>
             <p className="text-lg text-gray-600 mt-1">E-commerce Specialist</p>
-            <p className="text-gray-500">Lahore, Pakistan</p>
+            <p className="text-gray-500">{User.location}</p>
             <p className="text-sm text-gray-400 mt-2">
               Member since January 2021
             </p>
-            <p className="text-gray-700 my-4">Bio: {user.bio}</p>
+            <p className="text-gray-700 my-4">Bio: {User.bio}</p>
 
             {/* Social Icons */}
           </div>
@@ -395,8 +407,6 @@ const UserProfile = (
         </div>
       </div>
     </div>
-  ) : (
-    loginWithRedirect()
   );
 };
 

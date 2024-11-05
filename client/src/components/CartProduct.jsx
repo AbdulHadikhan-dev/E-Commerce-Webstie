@@ -22,7 +22,7 @@ const ShoppingCart = () => {
   const dispatch = useDispatch();
   const toast = useToast();
 
-  console.log(cart);
+  console.log(cart, authenticated);
 
   const [deliveryForm, setDeliveryForm] = useState({
     name: "",
@@ -117,7 +117,7 @@ const ShoppingCart = () => {
           console.log(errors);
         }
         if (!errors.ok) return false;
-        if (!authenticated) {
+        if (authenticated) {
           if (cart.length === 0) {
             alert(
               "There is no product in cart, please must be add product on cart"
@@ -133,7 +133,7 @@ const ShoppingCart = () => {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                user,
+                user: JSON.parse(localStorage.getItem("user")),
                 creditCard,
                 promoCode,
                 cart,
@@ -181,7 +181,7 @@ const ShoppingCart = () => {
           console.log(errors2);
         }
         if (!errors2.ok) return false;
-        if (!authenticated) {
+        if (authenticated) {
           if (cart.length === 0) {
             alert(
               "There is no product in cart, please must be add product on cart"
@@ -197,7 +197,7 @@ const ShoppingCart = () => {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                User,
+                user: JSON.parse(localStorage.getItem("user")),
                 deliveryForm,
                 cart,
                 totalPrice: total,

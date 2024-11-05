@@ -25,12 +25,13 @@ import { createdAdmin } from "./Redux/isAdminSlice";
 import { Login } from "./Redux/authenticated";
 
 function App() {
-  const { isAuthenticated, user } = useAuth0();
+  const { isAuthenticated, user, loginWithRedirect } = useAuth0();
 
   const admin = useSelector((state) => state.admin.value);
+  const authenticated = useSelector((state) => state.authenticated.value);
   const dispatch = useDispatch();
 
-  const [User, setUser] = useState(null);
+  const [User, setUser] = useState({});
   const [addDetails, setAddDetails] = useState({
     name: "",
     location: "",
@@ -79,7 +80,7 @@ function App() {
           contact: data.contact ? data.contact : "",
           name: data.name ? data.name : "",
         });
-        console.log(data);
+        // console.log("data", data);
         setImage(data.image);
       })
       .catch((error) => console.error("Error fetching orders:", error));
@@ -92,6 +93,8 @@ function App() {
       localStorage.getItem("user")
     ) {
       let user = JSON.parse(localStorage.getItem("user")) 
+      console.log("user from local storage",user);
+      
       fetchUser(user);
       checkUser(user);
       
@@ -161,7 +164,7 @@ function App() {
       path: "/profile",
       element: (
         <ChakraProvider>
-          <main>
+          {authenticated ? <main>
             {/* <Navbar1 icons={"text-gray-500"} /> */}
             <Profile
               User={User}
@@ -174,7 +177,7 @@ function App() {
             />
             <Footer />
             <Navbar2 varients="fixed bottom-0" />
-          </main>
+          </main>: <button onClick={loginWithRedirect}>Login</button>}
         </ChakraProvider>
       ),
     },
@@ -205,7 +208,7 @@ function App() {
       element: (
         <ChakraProvider>
           <main>
-            <AdminDashboard />
+            {authenticated && <AdminDashboard />}
           </main>
           ,
         </ChakraProvider>
