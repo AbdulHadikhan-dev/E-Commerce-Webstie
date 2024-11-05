@@ -66,7 +66,6 @@ function App() {
   const fetchUser = (user) => {
     fetch(
       `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/${user.sub}`,
-      { mode: "no-cors" }
     )
       .then((res) => res.json())
       .then((data) => {
