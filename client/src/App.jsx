@@ -48,7 +48,6 @@ function App() {
     let request = await fetch(
       `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/find/add`,
       {
-        mode: "no-cors",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
