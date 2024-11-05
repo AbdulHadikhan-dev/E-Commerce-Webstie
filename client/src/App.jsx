@@ -79,7 +79,7 @@ function App() {
           contact: data.contact ? data.contact : "",
           name: data.name ? data.name : "",
         });
-        console.log(addDetails);
+        console.log(data);
         setImage(data.image);
       })
       .catch((error) => console.error("Error fetching orders:", error));
@@ -91,7 +91,7 @@ function App() {
       localStorage.getItem("user") !== null &&
       localStorage.getItem("user")
     ) {
-      let user =JSON.parse(localStorage.getItem("user")) 
+      let user = JSON.parse(localStorage.getItem("user")) 
       fetchUser(user);
       checkUser(user);
       
@@ -100,6 +100,7 @@ function App() {
     }
     if (isAuthenticated) {
       localStorage.setItem("user", JSON.stringify(user));
+      dispatch(Login());
     }
   }, [isAuthenticated, user]);
 

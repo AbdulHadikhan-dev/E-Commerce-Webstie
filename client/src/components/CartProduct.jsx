@@ -197,7 +197,7 @@ const ShoppingCart = () => {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                user,
+                User,
                 deliveryForm,
                 cart,
                 totalPrice: total,
