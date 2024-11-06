@@ -14,6 +14,15 @@ const theme = createTheme({
       main: "#1976d2", // or any valid color code
     },
   },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
 });
 
 createRoot(document.getElementById("root")).render(

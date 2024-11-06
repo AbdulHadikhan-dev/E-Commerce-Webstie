@@ -21,13 +21,14 @@ import {
 } from "recharts";
 import AddProductPage from "./Addproduct";
 import Product from "./Product";
+import { useSelector } from "react-redux";
 
 const AdminDashboard = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activePage, setActivePage] = useState("Dashboard");
-  const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
+  const products = useSelector((state) => state.product.value);
 
   const fetchUsers = async () => {
     const url = `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/all`;
@@ -45,16 +46,6 @@ const AdminDashboard = () => {
     setDarkMode(isDarkMode);
   }, []);
 
-  async function getData() {
-    const url = "https://dummyjson.com/products?limit=129";
-    const response = await fetch(url);
-    let r = await response.json();
-    setProducts(r.products);
-    console.log(r.products);
-  }
-  useEffect(() => {
-    getData();
-  }, []);
 
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;

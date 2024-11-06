@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { FaUpload, FaTags, FaDollarSign } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useSelector, useDispatch } from "react-redux";
+import { addProduct } from "../Redux/ProductSlice";
 
-const AddProductPage = ({ darkMode }) => {
+const AddProductPage = () => {
+  const product = useSelector((state) => state.product.value);
   const [formData, setFormData] = useState({
+    id: product.length + 1,
     title: "",
     description: "",
     price: "",
@@ -15,7 +19,7 @@ const AddProductPage = ({ darkMode }) => {
     images: [],
   });
   const [errors, setErrors] = useState({});
-
+  const dispatch = useDispatch();
   const categories = [
     "Electronics",
     "Clothing",
@@ -40,7 +44,11 @@ const AddProductPage = ({ darkMode }) => {
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
-    setFormData({ ...formData, images: [...formData.images, ...files] });
+    setFormData({
+      ...formData,
+      images: [...formData.images, URL.createObjectURL(...files)],
+    });
+    console.log(formData);
   };
 
   const validateField = (name, value) => {
@@ -49,6 +57,10 @@ const AddProductPage = ({ darkMode }) => {
       case "title":
         if (!value.trim()) newErrors.title = "Product name is required";
         else delete newErrors.title;
+        break;
+      case "images":
+        if (value.length > 0) newErrors.images = "Product Images is required";
+        else delete newErrors.images;
         break;
       case "price":
         if (!value || isNaN(parseFloat(value))) {
@@ -81,6 +93,11 @@ const AddProductPage = ({ darkMode }) => {
           newErrors.brand = "Please enter a valid brand";
         } else delete newErrors.brand;
         break;
+      case "categories":
+        if (value.length > 0)
+          newErrors.categories = "Product Categories is required";
+        else delete newErrors.categories;
+        break;
       default:
         break;
     }
@@ -90,24 +107,31 @@ const AddProductPage = ({ darkMode }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (
-      errors.title ||
-      errors.price ||
-      errors.quantity ||
-      errors.stock ||
-      errors.rating ||
-      errors.discountPercentage ||
-      errors.brand
+      formData.title.length < 1 ||
+      formData.price.length < 1 ||
+      formData.stock.length < 1 ||
+      formData.rating.length < 1 ||
+      formData.discountPercentage.length < 1 ||
+      formData.brand.length < 1 ||
+      formData.images.length < 1
     ) {
       return false;
     }
-    fetch("https://dummyjson.com/products/add", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    })
-      .then((res) => res.json())
-      .then((res) => console.log("response", res));
-    console.log("Form submitted:", formData);
+    console.log(errors, formData);
+
+    dispatch(addProduct(formData));
+    setFormData({
+      id: product.length + 1,
+      title: "",
+      description: "",
+      price: "",
+      brand: "",
+      stock: "",
+      rating: "",
+      discountPercentage: "",
+      categories: [],
+      images: [],
+    });
   };
 
   return (
@@ -353,9 +377,9 @@ const AddProductPage = ({ darkMode }) => {
                   {formData.images.map((image, index) => (
                     <div key={index} className="relative">
                       <img
-                        src={URL.createObjectURL(image)}
+                        src={image}
                         alt={`Product image ${index + 1}`}
-                        className="h-24 w-24 object-cover rounded-md"
+                        className=" object-cover rounded-md"
                       />
                       <button
                         type="button"
@@ -367,7 +391,7 @@ const AddProductPage = ({ darkMode }) => {
                             ),
                           })
                         }
-                        className="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full p-1"
+                        className="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full p-1 h-6 w-6 flex justify-center items-center"
                       >
                         &times;
                       </button>

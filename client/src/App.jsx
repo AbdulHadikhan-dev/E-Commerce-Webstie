@@ -24,11 +24,14 @@ import { createdAdmin } from "./Redux/isAdminSlice";
 
 import { Login } from "./Redux/authenticated";
 
+import { setAllProduct } from "./Redux/ProductSlice";
+
 function App() {
   const { isAuthenticated, user, loginWithRedirect } = useAuth0();
 
   const admin = useSelector((state) => state.admin.value);
   const authenticated = useSelector((state) => state.authenticated.value);
+  const product = useSelector((state) => state.product.value);
   const dispatch = useDispatch();
 
   const [User, setUser] = useState({});
@@ -43,6 +46,15 @@ function App() {
 
   const [image, setImage] = useState("");
   // console.log(user, "env",import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL);
+  console.log('redux product state', product);
+
+  const fetchProduct = () => {
+    fetch("https://dummyjson.com/products?limit=194")
+      .then((res) => res.json())
+      .then((data) => {
+        dispatch(setAllProduct(data.products));
+      });
+  };
 
   const checkUser = async (user) => {
     let request = await fetch(
@@ -65,7 +77,7 @@ function App() {
 
   const fetchUser = (user) => {
     fetch(
-      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/${user.sub}`,
+      `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/${user.sub}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -103,8 +115,10 @@ function App() {
     }
     if (isAuthenticated) {
       localStorage.setItem("user", JSON.stringify(user));
+      checkUser(user);
       dispatch(Login());
     }
+    fetchProduct();
   }, [isAuthenticated, user]);
 
   const router = createBrowserRouter([

@@ -14,7 +14,7 @@ const WishList = () => {
   console.log(favorites);
   
   return (
-    <div className="mx-auto p-6 sm:p-8 lg:px-12 lg:py-8">
+    <div className="mx-auto p-6 sm:p-8 lg:px-12 lg:py-8 min-h-[75vh]">
       <header className="flex flex-col sm:flex-row justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-gray-800 mb-4 sm:mb-0">
           Your Favorites

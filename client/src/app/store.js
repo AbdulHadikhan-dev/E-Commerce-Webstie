@@ -4,6 +4,7 @@ import cartSlice from "../Redux/cartSlice";
 import searchSlice from "../Redux/searchSlice";
 import isAdminSlice from "../Redux/isAdminSlice";
 import authenticated from "../Redux/authenticated";
+import productSlice from "../Redux/ProductSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     search: searchSlice,
     admin: isAdminSlice,
     authenticated: authenticated,
+    product: productSlice,
   },
 });

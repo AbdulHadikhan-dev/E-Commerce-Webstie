@@ -112,7 +112,7 @@ const Product = ({
             {rating}
           </div>
           <div className="review text-gray-500 text-[11px] md:text-sm lg:text-base">
-            ( {reviews.length} )
+            ( {reviews?.length} )
           </div>
         </div>
         <div className="name text-sm font-medium md:text-lg md:mx-4 lg:mx-6 lg:text-2xl">

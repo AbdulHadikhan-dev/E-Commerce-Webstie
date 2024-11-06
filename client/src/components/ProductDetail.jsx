@@ -13,14 +13,10 @@ import { addProduct, addQuantity } from "../Redux/cartSlice";
 // import Product from "./Product";
 import { addToWishList } from "../Redux/favoraiteSlice";
 
-import Error from "../alerts/Error";
-import Success from "../alerts/Succes";
-import Warning from "../alerts/Warning";
-import Info from "../alerts/Info";
-import { color } from "framer-motion";
 
 const ProductDetail = () => {
   const cart = useSelector((state) => state.cart.value);
+  const product = useSelector((state) => state.product.value);
   const dispatch = useDispatch();
 
   const [productDetail, setProductDetail] = useState([]);
@@ -29,111 +25,28 @@ const ProductDetail = () => {
   const [selectColor, setSelectColor] = useState(colors[0]);
   const [selectSize, setSelectSize] = useState(sizes[0]);
   const [quantity, setQuantity] = useState(1);
-  const [Alert, setAlert] = useState({});
+  // const [Alert, setAlert] = useState({});
   const { id } = useParams();
   // console.log(id);
 
   async function getProductDetail() {
     // fetch product data from API
-    let response = await fetch(`https://dummyjson.com/products/${id}`);
-    let data = await response.json();
-    console.log(data);
-    setProductDetail([data]);
+    // let response = await fetch(`https://dummyjson.com/products/${id}`);
+    // let data = await response.json();
+    // console.log(data);
+    let r =product.find(product => product.id == id)
+
+
+    setProductDetail([r]);
     // console.log(r);
   }
 
   useEffect(() => {
     getProductDetail();
   }, [id]);
-
-  const addColor = () => {
-    let colorNodeList = document.querySelectorAll(".color");
-    colorNodeList.forEach((color, index) => {
-      color.style.backgroundColor = `${colors[index]}`;
-    });
-  };
-  addColor();
-
-  const handleColor = (e) => {
-    setSelectColor(e.target.id);
-    console.log(selectColor, colors);
-  };
-
-  const handleSize = (e) => {
-    setSelectSize(e.target.id);
-    console.log(selectSize);
-  };
-
+  
   // Dispatching action to add a product or update its quantity
   const handleAddToCart = () => {
-    if (sizes.length > 0 && colors.length > 0) {
-      console.log("if work", sizes, colors);
-      if (!selectColor && !selectSize) {
-        setAlert({
-          state: "error",
-          Component: (
-            <Error msg={"Please select a color and size"} setAlert={setAlert} />
-          ),
-        });
-        return;
-      } else if (!selectColor) {
-        setAlert({
-          state: "error",
-          Component: (
-            <Error msg={"Please select a color"} setAlert={setAlert} />
-          ),
-        });
-        return;
-      } else if (!selectSize) {
-        setAlert({
-          state: "error",
-          Component: <Error msg={"Please select a size"} setAlert={setAlert} />,
-        });
-        return;
-      } else {
-        setAlert({
-          state: "success",
-          Component: (
-            <Success msg={"Product add Successfully"} setAlert={setAlert} />
-          ),
-        });
-      }
-    } else if (colors.length > 0) {
-      console.log("else if work", colors);
-      if (!selectColor) {
-        setAlert({
-          state: "error",
-          Component: (
-            <Error msg={"Please select a color"} setAlert={setAlert} />
-          ),
-        });
-        return;
-      } else {
-        setAlert({
-          state: "success",
-          Component: (
-            <Success msg={"Product add Successfully"} setAlert={setAlert} />
-          ),
-        });
-      }
-    } else if (sizes.length > 0) {
-      console.log("else work", sizes);
-      if (!selectSize) {
-        setAlert({
-          state: "error",
-          Component: <Error msg={"Please select a size"} setAlert={setAlert} />,
-        });
-        return;
-      } else {
-        setAlert({
-          state: "success",
-          Component: (
-            <Success msg={"Product add Successfully"} setAlert={setAlert} />
-          ),
-        });
-      }
-    }
-
     let existingProduct = "";
     if (cart.length > 0) {
       existingProduct = cart.find((product) => {

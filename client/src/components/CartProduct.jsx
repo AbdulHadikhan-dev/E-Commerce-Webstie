@@ -284,7 +284,7 @@ const ShoppingCart = () => {
         Shopping Cart
       </h1>
       <div className="flex justify-around max-md:flex-col gap-8">
-        <div className="w-1/2 max-md:w-full">
+        <div className="w-1/2 max-md:w-full max-h-screen overflow-auto">
           {cart.length === 0 && (
             <div className="text-center text-xl md:text-2xl lg:text-4xl font-bold">
               There is no product Left in Cart
@@ -300,7 +300,7 @@ const ShoppingCart = () => {
                 <img
                   src={item.image[0]}
                   alt={item.title}
-                  className="absolute h-44 top-[-10px] right-12"
+                  className="absolute h-44 top-[-10px] right-12 max-lg:right-6 max-md:h-36 max-md:right-4"
                 />
                 <div className="flex justify-between items-center mb-2 w-1/2">
                   <h2 className="text-xl font-semibold">{item.title}</h2>

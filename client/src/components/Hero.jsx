@@ -1,4 +1,4 @@
-import Category from "./Category";
+// import Category from "./Category";
 import Product from "./Product";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -8,29 +8,23 @@ import { Link } from "react-router-dom";
 const Hero = () => {
   const [products, setProducts] = useState([]);
   const [scrollPosition, setScrollPosition] = useState(0);
-  async function getData() {
-    // const url = "http://localhost:3005/product/all";
-    // const response = await fetch(url);
-    // let r = await response.json();
-    fetch("https://dummyjson.com/products?limit=195")
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data.products);
-        console.log(data.products);
-      });
+  const product = useSelector((state) => state.product.value);
+
+  function getData() {
+    setProducts(product);
   }
 
   useEffect(() => {
+    getData();
     const handleScroll = () => {
       setScrollPosition(window.pageYOffset);
     };
-    getData();
 
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [product]);
 
   const favoraites = useSelector((state) => state.favorites.value);
   // const dispatch = useDispatch();

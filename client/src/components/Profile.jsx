@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+/* eslint-disable react/prop-types */
+import { useEffect, useState, useRef } from "react";
 import {
   FaPhoneAlt,
   FaEnvelope,
@@ -15,6 +16,18 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useSelector, useDispatch } from "react-redux";
 // import { Login } from "../Redux/authenticated";
 
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  AlertDialogCloseButton,
+  useDisclosure,
+  Button
+} from '@chakra-ui/react'
+
 const UserProfile = ({
   User,
   setUser,
@@ -26,6 +39,8 @@ const UserProfile = ({
 }) => {
   const { logout } = useAuth0();
   const [orders, setOrders] = useState([]);
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cancelRef = useRef()
   // const authenticated = useSelector((state) => state.authenticated.value);
 
   const fetchOrders = () => {
@@ -107,6 +122,32 @@ const UserProfile = ({
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center md:py-10">
       <div className="black absolute top-0 h-full w-full z-[60] bg-black bg-opacity-20 hidden"></div>
+      <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+              Delete Account
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              {`Are you sure? You can't undo this action afterwards.`}
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button colorScheme='red' onClick={handleDeleteAccount} ml={3}>
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
       <div
         className="add-details bg-white p-6 rounded-lg shadow-lg max-w-md w-full h-fit fixed top-[50%] left-[50%] z-[70] hidden"
         style={{ transform: "translate(-50%, -50%)" }}
@@ -315,7 +356,7 @@ const UserProfile = ({
           </button>
           <button
             className="flex items-center bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-lg shadow-md hover:from-red-600 hover:to-red-700 transition duration-300"
-            onClick={handleDeleteAccount}
+            onClick={onOpen}
           >
             <FaTrash className="mr-2" />
             Delete Account
@@ -373,6 +414,11 @@ const UserProfile = ({
         <div className="mt-8">
           <h2 className="text-2xl font-bold text-gray-800">Order History</h2>
           <ul className="mt-4 space-y-4">
+            {orders.length === 0 && (
+              <div className="text-2xl font-bold text-gray-800 w-full mx-auto text-center">
+                There is No Order Left
+              </div>
+            )}
             {orders.map((order) => {
               return (
                 <li
@@ -398,7 +444,7 @@ const UserProfile = ({
                     );
                   })}
                   <p className="text-black text-lg">
-                    Total: {order.totalPrice.toFixed(2)}
+                    Total: ${order.totalPrice.toFixed(2)}
                   </p>
                 </li>
               );
