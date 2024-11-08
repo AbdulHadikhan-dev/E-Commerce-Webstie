@@ -1,15 +1,30 @@
-import { useState, useEffect } from "react";
+/* eslint-disable react/prop-types */
+import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addToWishList, removeItemFromWishList } from "../Redux/favoraiteSlice";
-import { IoMdHeart } from "react-icons/io";
+// import { IoMdHeart } from "react-icons/io";
 import { FaStar } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import { CiHeart } from "react-icons/ci";
+// import { CiHeart } from "react-icons/ci";
+import { MdModeEdit } from "react-icons/md";
+import { FaTrash } from "react-icons/fa6";
 
 import { Spinner } from "@chakra-ui/react";
 
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { removeProduct } from "../Redux/ProductSlice";
+
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  useDisclosure,
+  Button,
+} from "@chakra-ui/react";
 
 const Product = ({
   id,
@@ -24,11 +39,16 @@ const Product = ({
   stock,
   // favorite,
   hidden,
+  dashboard,
+  setUpdateForm,
 }) => {
   const favorites = useSelector((state) => state.favorites.value);
+  const product = useSelector((state) => state.product.value);
   const dispatch = useDispatch();
   const [favoraite, setFavoraite] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef();
 
   useEffect(() => {
     favorites.forEach((f) => {
@@ -36,10 +56,50 @@ const Product = ({
         setFavoraite(true);
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [favorites]);
 
   return (
-    <div className="relative w-[45%] md:w-[48%] lg:w-[50%] xl:w-1/4">
+    <div
+      className={`relative ${
+        dashboard
+          ? "w-[40%] md:w-[45%] lg:w-[48%] xl:w-[23%]"
+          : "w-[45%] md:w-[48%] lg:w-[50%] xl:w-1/4"
+      } ${dashboard ? "bg-white" : "bg-transparent"} rounded-md`}
+    >
+      <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Delete Product
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              {`Are you sure? You can't undo this action afterwards.`}
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button
+                colorScheme="red"
+                ml={3}
+                onClick={() => {
+                  onClose();
+                  dispatch(removeProduct(id));
+                }}
+              >
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
       <div
         className={`favoraite absolute top-2 right-2 bg-[#b4b3b3] rounded-full p-1 md:p-2 h-8 w-8 md:h-10 md:w-10 flex justify-center items-center md:top-8 md:right-8 lg:top-14 lg:right-10 z-10 cursor-pointer ${hidden}`}
         onClick={() => {
@@ -86,11 +146,7 @@ const Product = ({
             className="text-white h-4 w-4 lg:h-8 lg:w-8"
           />
         )}
-        {isLoading && (
-          <Spinner
-            className="h-4 w-4 lg:h-6 lg:w-6 text-white"
-          />
-        )}
+        {isLoading && <Spinner className="h-4 w-4 lg:h-6 lg:w-6 text-white" />}
       </div>
       <Link
         to={`/product/${id}`}
@@ -100,7 +156,9 @@ const Product = ({
           <img
             src={image}
             alt={image}
-            className="rounded-md md:scale-90 lg:relative lg:top-3 border bg-gray-200 bg-cover bg-center max-h-[550px]"
+            className={`rounded-md md:scale-90 lg:relative lg:top-3 border bg-gray-200  ${
+              dashboard ? "bg-white" : "bg-gray-100"
+            } bg-cover bg-center max-h-[550px]`}
           />
         </div>
         <div className="overall flex gap-[6px] xl:gap-2 text-[12px] md:text-sm items-center md:mx-4 lg:mx-6 lg:text-base">
@@ -112,7 +170,7 @@ const Product = ({
             {rating}
           </div>
           <div className="review text-gray-500 text-[11px] md:text-sm lg:text-base">
-            ( {reviews?.length} )
+            ( {reviews?.length ? reviews.length : 0} )
           </div>
         </div>
         <div className="name text-sm font-medium md:text-lg md:mx-4 lg:mx-6 lg:text-2xl">
@@ -126,22 +184,30 @@ const Product = ({
             ? description.slice(0, 50) + "..."
             : description}
         </div>
-        {/* {discount > 0 && discount < price && (
-          <div className="flex gap-2 items-center md:mx-4 lg:mx-6">
-            <div className="discount-price text-[#ee2146] text-sm md:text-lg lg:text-2xl font-medium">
-              ${discount}
-            </div>
-            <div className="previous-price text-[#959fa8] text-[12px] md:text-base lg:text-xl line-through font-medium">
-              ${price}
-            </div>
-          </div>
-        )} */}
         {!discount && (
           <div className="price text-sm font-medium md:text-lg md:mx-4 lg:mx-6 lg:text-2xl">
             ${price}
           </div>
         )}
       </Link>
+      {dashboard && (
+        <div className="btn w-full flex items-center justify-around mt-6 mb-3">
+          <button
+            className="rounded-md bg-blue-100 text-blue-500 px-4 py-1 flex justify-center items-center gap-1 font-medium"
+            onClick={() => setUpdateForm({ data: id })}
+          >
+            <MdModeEdit />
+            Edit
+          </button>
+          <button
+            className="rounded-md bg-red-100 text-red-500 px-4 py-1 flex justify-center items-center gap-1 font-medium"
+            onClick={onOpen}
+          >
+            <FaTrash />
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 };

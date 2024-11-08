@@ -22,12 +22,16 @@ import {
 import AddProductPage from "./Addproduct";
 import Product from "./Product";
 import { useSelector } from "react-redux";
+import { Menu, MenuButton, MenuList, MenuItem, Button } from "@chakra-ui/react";
 
 const AdminDashboard = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activePage, setActivePage] = useState("Dashboard");
   const [users, setUsers] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [updateForm, setUpdateForm] = useState({});
+  const [getSingleOrder, setSingleOrder] = useState([]);
   const products = useSelector((state) => state.product.value);
 
   const fetchUsers = async () => {
@@ -37,15 +41,32 @@ const AdminDashboard = () => {
     setUsers(r.length);
   };
 
+  const fetchOrders = async () => {
+    const url = `${
+      import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL
+    }/api/order/all`;
+    const response = await fetch(url);
+    let r = await response.json();
+    setOrders(r);
+  };
+
   useEffect(() => {
+    fetchOrders();
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+    orders.forEach((singleItem) => {
+      singleItem.cart.forEach((order) => {
+        setSingleOrder([...getSingleOrder, order]);
+      });
+    });
+  }, [orders]);
 
   useEffect(() => {
     const isDarkMode = localStorage.getItem("darkMode") === "true";
     setDarkMode(isDarkMode);
   }, []);
-
 
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;
@@ -64,12 +85,6 @@ const AdminDashboard = () => {
     { name: "Apr", sales: 4500 },
     { name: "May", sales: 6000 },
     { name: "Jun", sales: 5500 },
-  ];
-
-  const recentOrders = [
-    { id: 1, customer: "John Doe", total: 120.5, status: "Delivered" },
-    { id: 2, customer: "Jane Smith", total: 85.2, status: "Processing" },
-    { id: 3, customer: "Bob Johnson", total: 250.0, status: "Shipped" },
   ];
 
   const NavItem = ({ icon: Icon, text }) => (
@@ -149,51 +164,78 @@ const AdminDashboard = () => {
         );
       case "Orders":
         return (
-          <div
-            className={`p-6 rounded-lg shadow-md ${
-              darkMode ? "bg-gray-800" : "bg-white"
-            }`}
-          >
-            <h3 className="text-xl font-semibold mb-4">Recent Orders</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full table-auto">
+          <div className="p-6 bg-gray-100 min-h-screen">
+            <div className="bg-white rounded-lg p-4 shadow-md">
+              <div className="flex justify-between items-center mb-4">
+                <input
+                  type="text"
+                  placeholder="Search here..."
+                  className="border border-gray-300 rounded-lg p-2 w-1/4"
+                />
+                <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">
+                  Export all orders
+                </button>
+              </div>
+
+              <table className="w-full text-left table-auto">
                 <thead>
-                  <tr
-                    className={`${
-                      darkMode
-                        ? "bg-gray-700 text-gray-200"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    <th className="px-4 py-2">Order ID</th>
-                    <th className="px-4 py-2">Customer</th>
-                    <th className="px-4 py-2">Total</th>
-                    <th className="px-4 py-2">Status</th>
+                  <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                    <th className="py-3 px-4">Order ID</th>
+                    <th className="py-3 px-4">Product</th>
+                    <th className="py-3 px-4">Quantity</th>
+                    <th className="py-3 px-4">Price</th>
+                    <th className="py-3 px-4">Payment Method</th>
+                    <th className="py-3 px-4">Status</th>
+                    <th className="py-3 px-4">Action</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {recentOrders.map((order) => (
+                <tbody className="text-gray-700 text-sm">
+                  {console.log(getSingleOrder)}
+
+                  {getSingleOrder.map((order, index) => (
                     <tr
-                      key={order.id}
-                      className={`border-b ${
-                        darkMode ? "border-gray-700" : "border-gray-200"
-                      }`}
+                      key={index}
+                      className="border-b border-gray-200 hover:bg-gray-100"
                     >
-                      <td className="px-4 py-2">{order.id}</td>
-                      <td className="px-4 py-2">{order.customer}</td>
-                      <td className="px-4 py-2">${order.total.toFixed(2)}</td>
-                      <td className="px-4 py-2">
+                      <td className="py-3 px-4 flex items-center">
+                        <img
+                          src="https://via.placeholder.com/40"
+                          alt="Product"
+                          className="w-10 h-10 rounded-full mr-3"
+                        />
+                        {order.product}
+                      </td>
+                      <td className="py-3 px-4">{order.orderId}</td>
+                      <td className="py-3 px-4">{order.price}</td>
+                      <td className="py-3 px-4">{order.quantity}</td>
+                      <td className="py-3 px-4">{order.payment}</td>
+                      <td className="py-3 px-4">
                         <span
-                          className={`px-2 py-1 rounded-full text-xs ${
-                            order.status === "Delivered"
-                              ? "bg-green-200 text-green-800"
-                              : order.status === "Processing"
-                              ? "bg-yellow-200 text-yellow-800"
-                              : "bg-blue-200 text-blue-800"
+                          className={`px-2 py-1 rounded-full text-white ${
+                            order.status === "Success"
+                              ? "bg-green-500"
+                              : "bg-yellow-500"
                           }`}
                         >
                           {order.status}
                         </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <button className="bg-blue-100 text-blue-500 px-4 py-1 rounded-lg">
+                          Tracking
+                        </button>
+                      </td>
+                      <td className="py-3 px-4 flex space-x-2">
+                        <Menu>
+                          <MenuButton as={Button}>Actions</MenuButton>
+                          <MenuList>
+                            <MenuItem className="text-green-600">
+                              Deliver
+                            </MenuItem>
+                            <MenuItem className="text-red-600">Cancel</MenuItem>
+                            <MenuItem className="text-red-600">Delete</MenuItem>
+                          </MenuList>
+                        </Menu>
                       </td>
                     </tr>
                   ))}
@@ -203,29 +245,36 @@ const AdminDashboard = () => {
           </div>
         );
       case "Products":
-        return products.length > 0 ? (
-          <div className="product-continer flex flex-wrap justify-between xl:justify-start gap-y-6 px-5 lg:px-12 mt-6">
-            {products.map((product) => {
-              return (
-                <Product
-                  key={product.id}
-                  id={product.id}
-                  title={product.title}
-                  description={product.description}
-                  brand={product.brand}
-                  rating={product.rating}
-                  price={product.price}
-                  reviews={product.reviews}
-                  image={product.images[0]}
-                  hidden={"hidden"}
-                  // favorite={product.favorite}
-                />
-              );
-            })}
+        return <div className={`${!updateForm.data?'product-continer flex flex-wrap justify-between xl:justify-start gap-y-6 px-5 lg:px-12 mt-6 gap-4': ''}`}>
+            {!updateForm.data &&
+              products.map((product) => {
+                return (
+                  <Product
+                    key={product.id}
+                    id={product.id}
+                    title={product.title}
+                    description={product.description}
+                    brand={product.brand}
+                    rating={product.rating}
+                    price={product.price}
+                    reviews={product.reviews}
+                    image={product.images[0]}
+                    hidden={"hidden"}
+                    dashboard={true}
+                    updateForm={updateForm}
+                    setUpdateForm={setUpdateForm}
+                    // favorite={product.favorite}
+                  />
+                );
+              })}
+            {updateForm.data && (
+              <AddProductPage
+                updateForm={updateForm}
+                setUpdateForm={setUpdateForm}
+              />
+            )}
           </div>
-        ) : (
-          <>loading</>
-        );
+        
       case "AddProducts":
         return (
           <div>

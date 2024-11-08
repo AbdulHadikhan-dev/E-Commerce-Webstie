@@ -13,7 +13,6 @@ import { IoCameraOutline } from "react-icons/io5";
 
 import { useAuth0 } from "@auth0/auth0-react";
 
-import { useSelector, useDispatch } from "react-redux";
 // import { Login } from "../Redux/authenticated";
 
 import {

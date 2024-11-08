@@ -16,18 +16,16 @@ export const productSlice = createSlice({
     },
     updateProduct: (state, action) => {
       const index = state.value.findIndex((item) => {
-        return item.id === action.payload.existingProduct.id;
+        return item.id === action.payload.id;
       });
       if (index !== -1) {
         console.log(action.payload);
-        state.value[index].quantity += action.payload.quantity;
-      } else {
-        state.value.push(action.payload);
+        state.value[index] = action.payload;
       }
     },
     removeProduct: (state, action) => {
       const newArr = state.value.filter((item) => {
-        return item.id !== action.payload.id;
+        return item.id !== action.payload;
       });
       state.value = newArr;
     },

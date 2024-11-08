@@ -229,6 +229,38 @@ function App() {
         </ChakraProvider>
       ),
     },
+    {
+      path: "/products",
+      element: (
+        <ChakraProvider>
+          <main>{authenticated && <AdminDashboard />}</main>,
+        </ChakraProvider>
+      ),
+    },
+    {
+      path: "/orders",
+      element: (
+        <ChakraProvider>
+          <main>{authenticated && <AdminDashboard />}</main>,
+        </ChakraProvider>
+      ),
+    },
+    {
+      path: "/customers",
+      element: (
+        <ChakraProvider>
+          <main>{authenticated && <AdminDashboard />}</main>,
+        </ChakraProvider>
+      ),
+    },
+    {
+      path: "/addproduct",
+      element: (
+        <ChakraProvider>
+          <main>{authenticated && <AdminDashboard />}</main>,
+        </ChakraProvider>
+      ),
+    },
   ]);
   return <RouterProvider router={router} />;
 }

@@ -98,6 +98,7 @@ const Hero = () => {
               reviews={product.reviews}
               stock={product.stock}
               image={product.images[0]}
+              dashboard={false}
               // favorite={product.favorite}
             />
           );

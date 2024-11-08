@@ -1,10 +1,13 @@
-import { useState } from "react";
+/* eslint-disable react/prop-types */
+import { useState, useEffect } from "react";
 import { FaUpload, FaTags, FaDollarSign } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
-import { addProduct } from "../Redux/ProductSlice";
+import { addProduct, updateProduct } from "../Redux/ProductSlice";
 
-const AddProductPage = () => {
+import { Alert, AlertIcon } from "@chakra-ui/react";
+
+const AddProductPage = ({ updateForm, setUpdateForm }) => {
   const product = useSelector((state) => state.product.value);
   const [formData, setFormData] = useState({
     id: product.length + 1,
@@ -15,7 +18,7 @@ const AddProductPage = () => {
     stock: "",
     rating: "",
     discountPercentage: "",
-    categories: [],
+    category: "",
     images: [],
   });
   const [errors, setErrors] = useState({});
@@ -29,6 +32,22 @@ const AddProductPage = () => {
     "Toys",
   ];
 
+  useEffect(() => {
+    if (updateForm) {
+      product.forEach((item) => {
+        if (item.id === updateForm.data) {
+          console.log(item);
+          setFormData(item);
+          // setFormData({ ...formData, categories: Array.apply(item.category) });
+        }
+      });
+    }
+    console.log(updateForm);
+    
+  }, [updateForm]);
+
+  console.log(formData);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -36,10 +55,8 @@ const AddProductPage = () => {
   };
 
   const handleCategoryChange = (category) => {
-    const updatedCategories = formData.categories.includes(category)
-      ? formData.categories.filter((c) => c !== category)
-      : [...formData.categories, category];
-    setFormData({ ...formData, categories: updatedCategories });
+    setFormData({ ...formData, category });
+    console.log(category);
   };
 
   const handleImageUpload = (e) => {
@@ -106,32 +123,61 @@ const AddProductPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (
-      formData.title.length < 1 ||
-      formData.price.length < 1 ||
-      formData.stock.length < 1 ||
-      formData.rating.length < 1 ||
-      formData.discountPercentage.length < 1 ||
-      formData.brand.length < 1 ||
-      formData.images.length < 1
-    ) {
-      return false;
-    }
-    console.log(errors, formData);
+    if (updateForm.data) {
+      console.log("hello world!");
+      if (
+        formData.title.length < 1 ||
+        formData.price.length < 1 ||
+        formData.stock.length < 1 ||
+        formData.rating.length < 1 ||
+        formData.discountPercentage.length < 1 ||
+        formData.brand.length < 1 ||
+        formData.images.length < 1
+      ) {
+        return false;
+      }
+      dispatch(updateProduct(formData));
+      setFormData({
+        id: product.length + 1,
+        title: "",
+        description: "",
+        price: "",
+        brand: "",
+        stock: "",
+        rating: "",
+        discountPercentage: "",
+        category: "",
+        images: [],
+      });
+      setUpdateForm({});
+    } else {
+      if (
+        formData.title.length < 1 ||
+        formData.price.length < 1 ||
+        formData.stock.length < 1 ||
+        formData.rating.length < 1 ||
+        formData.discountPercentage.length < 1 ||
+        formData.brand.length < 1 ||
+        formData.images.length < 1
+      ) {
+        return false;
+      }
+      console.log(errors, formData);
 
-    dispatch(addProduct(formData));
-    setFormData({
-      id: product.length + 1,
-      title: "",
-      description: "",
-      price: "",
-      brand: "",
-      stock: "",
-      rating: "",
-      discountPercentage: "",
-      categories: [],
-      images: [],
-    });
+      dispatch(addProduct(formData));
+      setFormData({
+        id: product.length + 1,
+        title: "",
+        description: "",
+        price: "",
+        brand: "",
+        stock: "",
+        rating: "",
+        discountPercentage: "",
+        category: "",
+        images: [],
+      });
+    }
   };
 
   return (
@@ -142,6 +188,12 @@ const AddProductPage = () => {
             Add New Product
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {updateForm && (
+              <Alert status="warning" className="my-2">
+                <AlertIcon />
+                Updating a product will not update it into the server.
+              </Alert>
+            )}
             <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
               <div>
                 <label
@@ -309,11 +361,13 @@ const AddProductPage = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => handleCategoryChange(category)}
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                          formData.categories.includes(category)
-                            ? "bg-indigo-100 text-indigo-800"
-                            : "bg-gray-100 text-gray-800"
-                        }`}
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
+                          ${
+                            formData.category === category
+                              ? "bg-indigo-100 text-indigo-800"
+                              : "bg-gray-100 text-gray-800"
+                          }
+                          `}
                       >
                         <FaTags className="mr-2 h-4 w-4" />
                         {category}
@@ -409,7 +463,7 @@ const AddProductPage = () => {
                   whileTap={{ scale: 0.95 }}
                   className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  Add Product
+                  {!updateForm ? "Add Product" : "Update Product"}
                 </motion.button>
               </div>
             </div>
