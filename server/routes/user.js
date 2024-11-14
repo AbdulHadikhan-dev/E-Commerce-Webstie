@@ -112,15 +112,16 @@ router.put("/update/user/:slug", async (req, res) => {
 router.delete("/delete/account/:id", async (req, res) => {
   const uri = process.env.MONGO_URI;
   const client = new MongoClient(uri);
-  try{
+  try {
     await client.connect();
     let db = client.db("Review");
     let users = db.collection("users");
     let deleteAccount = await users.deleteOne({ sub: req.params.id });
-    res.json({ msg: 'User deleted successfully', ok: true, deleteAccount });
-  }finally{
+    res.json({ msg: "User deleted successfully", ok: true, deleteAccount });
+  } finally {
     client.close();
   }
 });
+
 
 module.exports = router;

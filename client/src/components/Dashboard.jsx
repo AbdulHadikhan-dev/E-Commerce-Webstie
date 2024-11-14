@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+/* eslint-disable react/prop-types */
+import { useState, useEffect, useRef } from "react";
 import {
   FiHome,
   FiShoppingBag,
@@ -22,7 +23,17 @@ import {
 import AddProductPage from "./Addproduct";
 import Product from "./Product";
 import { useSelector } from "react-redux";
-import { Menu, MenuButton, MenuList, MenuItem, Button } from "@chakra-ui/react";
+
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  useDisclosure,
+  Button,
+} from "@chakra-ui/react";
 
 const AdminDashboard = () => {
   const [darkMode, setDarkMode] = useState(false);
@@ -30,9 +41,11 @@ const AdminDashboard = () => {
   const [activePage, setActivePage] = useState("Dashboard");
   const [users, setUsers] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [deleteProduct, setDeleteProduct] = useState({});
   const [updateForm, setUpdateForm] = useState({});
-  const [getSingleOrder, setSingleOrder] = useState([]);
   const products = useSelector((state) => state.product.value);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef();
 
   const fetchUsers = async () => {
     const url = `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/all`;
@@ -50,18 +63,27 @@ const AdminDashboard = () => {
     setOrders(r);
   };
 
+  const actionButton = async (action) => {
+    const url = `http://localhost:3000/api/order/${action.status}/query?order_id=${action.id}&user_email=${action.email}`;
+    const response = await fetch(url);
+    let r = await response.json();
+    console.log(r);
+    alert(r.msg);
+    fetchOrders();
+  };
+
   useEffect(() => {
     fetchOrders();
     fetchUsers();
   }, []);
 
-  useEffect(() => {
-    orders.forEach((singleItem) => {
-      singleItem.cart.forEach((order) => {
-        setSingleOrder([...getSingleOrder, order]);
-      });
-    });
-  }, [orders]);
+  // useEffect(() => {
+  //   orders.forEach((singleItem) => {
+  //     singleItem.cart.forEach((order) => {
+  //       setSingleOrder([...getSingleOrder, order]);
+  //     });
+  //   });
+  // }, [orders]);
 
   useEffect(() => {
     const isDarkMode = localStorage.getItem("darkMode") === "true";
@@ -164,8 +186,46 @@ const AdminDashboard = () => {
         );
       case "Orders":
         return (
-          <div className="p-6 bg-gray-100 min-h-screen">
+          <div className="p-6 bg-gray-100 min-h-screen w-full">
             <div className="bg-white rounded-lg p-4 shadow-md">
+              <AlertDialog
+                isOpen={isOpen}
+                leastDestructiveRef={cancelRef}
+                onClose={onClose}
+              >
+                <AlertDialogOverlay>
+                  <AlertDialogContent>
+                    <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                      Delete Product
+                    </AlertDialogHeader>
+
+                    <AlertDialogBody>
+                      {`Delete a product will not delete it into the server.`}
+                      <p>Are you sure?</p>
+                    </AlertDialogBody>
+
+                    <AlertDialogFooter>
+                      <Button ref={cancelRef} onClick={onClose}>
+                        Cancel
+                      </Button>
+                      <Button
+                        colorScheme="red"
+                        ml={3}
+                        onClick={() => {
+                          actionButton({
+                            status: "delete",
+                            id: deleteProduct.id,
+                            email: deleteProduct.email,
+                          });
+                          onClose();
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialogOverlay>
+              </AlertDialog>
               <div className="flex justify-between items-center mb-4">
                 <input
                   type="text"
@@ -177,75 +237,142 @@ const AdminDashboard = () => {
                 </button>
               </div>
 
-              <table className="w-full text-left table-auto">
+              <table className="w-full text-left">
                 <thead>
                   <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                    <th className="py-3 px-4">Order ID</th>
                     <th className="py-3 px-4">Product</th>
-                    <th className="py-3 px-4">Quantity</th>
+                    <th className="py-3 px-4">Product ID</th>
                     <th className="py-3 px-4">Price</th>
+                    <th className="py-3 px-4">Quantity</th>
                     <th className="py-3 px-4">Payment Method</th>
+                    <th className="py-3 px-4">User email</th>
                     <th className="py-3 px-4">Status</th>
                     <th className="py-3 px-4">Action</th>
                   </tr>
                 </thead>
                 <tbody className="text-gray-700 text-sm">
-                  {console.log(getSingleOrder)}
-
-                  {getSingleOrder.map((order, index) => (
-                    <tr
-                      key={index}
-                      className="border-b border-gray-200 hover:bg-gray-100"
-                    >
-                      <td className="py-3 px-4 flex items-center">
-                        <img
-                          src="https://via.placeholder.com/40"
-                          alt="Product"
-                          className="w-10 h-10 rounded-full mr-3"
-                        />
-                        {order.product}
-                      </td>
-                      <td className="py-3 px-4">{order.orderId}</td>
-                      <td className="py-3 px-4">{order.price}</td>
-                      <td className="py-3 px-4">{order.quantity}</td>
-                      <td className="py-3 px-4">{order.payment}</td>
-                      <td className="py-3 px-4">
-                        <span
-                          className={`px-2 py-1 rounded-full text-white ${
-                            order.status === "Success"
-                              ? "bg-green-500"
-                              : "bg-yellow-500"
+                  {orders.map((order) => {
+                    console.log(orders);
+                    return order.cart.map((item, index) => {
+                      console.log(item);
+                      return (
+                        <tr
+                          key={index}
+                          className={`border-b border-gray-200 hover:bg-gray-100 ${
+                            item.status === "delete" && "hidden"
                           }`}
                         >
-                          {order.status}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4">
-                        <button className="bg-blue-100 text-blue-500 px-4 py-1 rounded-lg">
-                          Tracking
-                        </button>
-                      </td>
-                      <td className="py-3 px-4 flex space-x-2">
-                        <Menu>
-                          <MenuButton as={Button}>Actions</MenuButton>
-                          <MenuList>
-                            <MenuItem className="text-green-600">
-                              Deliver
-                            </MenuItem>
-                            <MenuItem className="text-red-600">Cancel</MenuItem>
-                            <MenuItem className="text-red-600">Delete</MenuItem>
-                          </MenuList>
-                        </Menu>
-                      </td>
-                    </tr>
-                  ))}
+                          <td className="py-3 px-4 flex items-center">
+                            <img
+                              src={item.image[0]}
+                              alt={item.image[0]}
+                              className="w-10 h-10 rounded-full mr-3"
+                            />
+                            {item.title}
+                          </td>
+                          <td className="py-3 px-4 font-semibold">{item.id}</td>
+                          <td className="py-3 px-4 font-semibold">
+                            ${item.price}
+                          </td>
+                          <td className="py-3 px-4 font-semibold">
+                            {item.quantity}
+                          </td>
+                          <td className="py-3 px-4 font-semibold">
+                            {order.creditCard ? "Card" : "Cash on delivery"}
+                          </td>
+
+                          <td className="py-3 px-4">{order.user?.email}</td>
+                          <td className="py-3 px-4">
+                            <button
+                              className={`px-2 py-1 rounded-md font-semibold inline-block ${
+                                item.status === "deliverd"
+                                  ? "text-green-500"
+                                  : item.status === "processing"
+                                  ? "text-yellow-600"
+                                  : item.status === "cancel"
+                                  ? "text-red-500"
+                                  : ""
+                              }
+                              ${
+                                item.status === "deliverd"
+                                  ? "bg-green-50"
+                                  : item.status === "processing"
+                                  ? "bg-yellow-50"
+                                  : item.status === "cancel"
+                                  ? "bg-red-50"
+                                  : ""
+                              }
+                              `}
+                            >
+                              {item.status}
+                            </button>
+                          </td>
+                          <td className="py-3 px-4 flex space-x-2">
+                            <div className="dropdown">
+                              <div tabIndex={0} role="button" className="btn">
+                                Action
+                              </div>
+                              <ul
+                                tabIndex={0}
+                                className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+                              >
+                                <li
+                                  className="font-semibold px-3 py-1 hover:bg-slate-100 cursor-pointer"
+                                  onClick={() =>
+                                    actionButton({
+                                      status: "deliverd",
+                                      id: item.id,
+                                      email: order.user?.email,
+                                    })
+                                  }
+                                >
+                                  Deliverd
+                                </li>
+                                <li
+                                  className="font-semibold px-3 py-1 hover:bg-slate-100 cursor-pointer"
+                                  onClick={() =>
+                                    actionButton({
+                                      status: "cancel",
+                                      id: item.id,
+                                      email: order.user?.email,
+                                    })
+                                  }
+                                >
+                                  Cancel
+                                </li>
+                                <li
+                                  className="font-semibold px-3 py-1 hover:bg-slate-100 cursor-pointer"
+                                  onClick={() => {
+                                    onOpen();
+                                    setDeleteProduct({
+                                      id: item.id,
+                                      email: order.user?.email,
+                                    });
+                                  }}
+                                >
+                                  Delete
+                                </li>
+                              </ul>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    });
+                  })}
                 </tbody>
               </table>
             </div>
           </div>
         );
       case "Products":
-        return <div className={`${!updateForm.data?'product-continer flex flex-wrap justify-between xl:justify-start gap-y-6 px-5 lg:px-12 mt-6 gap-4': ''}`}>
+        return (
+          <div
+            className={`${
+              !updateForm.data
+                ? "product-continer flex flex-wrap justify-between xl:justify-start gap-y-6 px-5 lg:px-12 mt-6 gap-4"
+                : ""
+            }`}
+          >
             {!updateForm.data &&
               products.map((product) => {
                 return (
@@ -274,7 +401,8 @@ const AdminDashboard = () => {
               />
             )}
           </div>
-        
+        );
+
       case "AddProducts":
         return (
           <div>

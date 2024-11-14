@@ -79,7 +79,8 @@ const Product = ({
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              {`Are you sure? You can't undo this action afterwards.`}
+              {`Delete a product will not delete it into the server.`}
+              <p>Are you sure?</p>
             </AlertDialogBody>
 
             <AlertDialogFooter>
@@ -191,7 +192,7 @@ const Product = ({
         )}
       </Link>
       {dashboard && (
-        <div className="btn w-full flex items-center justify-around mt-6 mb-3">
+        <div className="w-full flex items-center justify-around mt-6 mb-3">
           <button
             className="rounded-md bg-blue-100 text-blue-500 px-4 py-1 flex justify-center items-center gap-1 font-medium"
             onClick={() => setUpdateForm({ data: id })}

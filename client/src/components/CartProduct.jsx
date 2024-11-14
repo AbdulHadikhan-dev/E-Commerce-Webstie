@@ -140,6 +140,7 @@ const ShoppingCart = () => {
                 totalPrice: total,
                 payMethod,
                 date: new Date(),
+                status: "processing",
               }),
             }
           );
@@ -203,6 +204,7 @@ const ShoppingCart = () => {
                 totalPrice: total,
                 payMethod,
                 date: new Date(),
+                status: "processing",
               }),
             }
           );
