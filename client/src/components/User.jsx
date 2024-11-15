@@ -45,11 +45,11 @@ export default function DataTable() {
     //     sx={{ border: 0 }}
     //   />
     // </Paper>
-    <div className="container mx-auto p-2 md:p-6">
+    <div className="container mx-auto max-sm:p-0 p-2 md:p-6">
       <h1 className="text-2xl font-bold mb-4">Customer List</h1>
       <table className="min-w-full bg-white rounded-lg shadow-lg">
         <thead>
-          <tr className="bg-gray-200 text-gray-600 uppercase text-sm">
+          <tr className="bg-gray-200 text-gray-600 uppercase text-sm max-sm:text-xs">
             <th className="py-1 px-2 lg:py-3 lg:px-4 text-left">ID</th>
             <th className="py-1 px-2 lg:py-3 lg:px-4 text-left">Name</th>
             <th className="py-1 px-2 lg:py-3 lg:px-4 text-left">Email</th>
@@ -60,11 +60,11 @@ export default function DataTable() {
         <tbody>
           {rows.map((row) => {
             return (
-              <tr className="hover:bg-gray-100 text-black border" key={row._id}>
-                <td className="py-1 px-2 lg:py-3  lg:px-4 border">{row._id}</td>
-                <td className="py-1 px-2 lg:py-3  lg:px-4 border">{row.name}</td>
-                <td className="py-1 px-2 lg:py-3  lg:px-4 border">{row.email}</td>
-                <td className="py-1 px-2 lg:py-3  lg:px-4 border">
+              <tr className="hover:bg-gray-100 text-black border max-sm:text-xs" key={row._id}>
+                <td className="py-1 px-2 lg:py-3 lg:px-4 border">{row._id}</td>
+                <td className="py-1 px-2 lg:py-3 lg:px-4 border">{row.name}</td>
+                <td className="py-1 px-2 lg:py-3 lg:px-4 border">{row.email}</td>
+                <td className="py-1 px-2 lg:py-3 lg:px-4 border">
                   <img
                     src={row.picture}
                     alt="Customer Picture"

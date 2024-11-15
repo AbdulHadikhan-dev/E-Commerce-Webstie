@@ -188,8 +188,8 @@ const AdminDashboard = () => {
         );
       case "Orders":
         return (
-          <div className="p-6 bg-gray-100 min-h-screen w-full">
-            <div className="bg-white rounded-lg p-4 shadow-md">
+          <div className="sm:p-6 bg-gray-100 min-h-screen w-full">
+            <div className="bg-white rounded-lg md:p-4 shadow-md">
               <AlertDialog
                 isOpen={isOpen}
                 leastDestructiveRef={cancelRef}
@@ -228,7 +228,7 @@ const AdminDashboard = () => {
                   </AlertDialogContent>
                 </AlertDialogOverlay>
               </AlertDialog>
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex justify-between items-center mb-4 hidden">
                 <input
                   type="text"
                   placeholder="Search here..."
@@ -241,7 +241,7 @@ const AdminDashboard = () => {
 
               <table className="w-full text-left">
                 <thead>
-                  <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                  <tr className="bg-gray-200 text-gray-600 uppercase text-sm max-sm:text-xs leading-normal">
                     <th className="py-3 px-4">Product</th>
                     <th className="py-3 px-4">Product ID</th>
                     <th className="py-3 px-4">Price</th>
@@ -252,7 +252,7 @@ const AdminDashboard = () => {
                     <th className="py-3 px-4">Action</th>
                   </tr>
                 </thead>
-                <tbody className="text-gray-700 text-sm">
+                <tbody className="text-gray-700 text-sm max-sm:text-xs">
                   {orders.map((order) => {
                     console.log(orders);
                     return order.cart.map((item, index) => {
@@ -371,7 +371,7 @@ const AdminDashboard = () => {
           <div
             className={`${
               !updateForm.data
-                ? "product-continer flex flex-wrap justify-between xl:justify-start gap-y-6 px-5 lg:px-12 mt-6 gap-4"
+                ? "product-continer flex flex-wrap justify-between xl:justify-start sm:gap-y-6 sm:px-5 lg:px-12 mt-6 gap-4 max-sm:gap-2"
                 : ""
             }`}
           >

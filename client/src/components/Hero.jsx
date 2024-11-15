@@ -37,7 +37,7 @@ const Hero = () => {
   };
 
   return (
-    <div className="hero-section min-h-screen relative">
+    <div className="hero-section min-h-screen relative mb-8 max-sm:mb-28">
       <div className="relative h-screen overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"

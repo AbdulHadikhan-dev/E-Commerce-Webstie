@@ -51,7 +51,7 @@ const Search = () => {
   }, []);
 
   return (
-    <div className="h-screen w-full bg-white">
+    <div className="max-h-screen w-full bg-white">
       <div
         className="search relative flex flex-col"
         ref={ref}

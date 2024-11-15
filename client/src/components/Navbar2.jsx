@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 // import { BiHomeAlt } from "react-icons/bi";
 // import { MdFavoriteBorder } from "react-icons/md";
@@ -16,15 +17,14 @@ import PersonIcon from "@mui/icons-material/Person";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const Navbar2 = ({ varients }) => {
-  const admin = useSelector((state) => state.admin.value);
   const authenticated = useSelector((state) => state.authenticated.value);
 
-  const { loginWithRedirect, isAuthenticated } = useAuth0();
+  const { loginWithRedirect } = useAuth0();
 
   return (
     <>
       <nav
-        className={`flex justify-between py-4 px-4 items-center ${varients} w-full lg:hidden z-10 bg-white`}
+        className={`flex justify-between py-4 px-4 items-center mt-40 ${varients} w-full lg:hidden z-10 bg-white`}
       >
         <div className="hr w-full h-[1px] bg-slate-200 absolute top-0 left-0"></div>
         <NavLink

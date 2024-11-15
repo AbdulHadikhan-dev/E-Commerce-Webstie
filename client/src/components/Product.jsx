@@ -63,7 +63,7 @@ const Product = ({
     <div
       className={`relative ${
         dashboard
-          ? "w-[40%] md:w-[45%] lg:w-[48%] xl:w-[23%]"
+          ? "w-[47%] md:w-[45%] lg:w-[48%] xl:w-[23%] max-sm:px-3"
           : "w-[45%] md:w-[48%] lg:w-[50%] xl:w-1/4"
       } ${dashboard ? "bg-white" : "bg-transparent"} rounded-md`}
     >
@@ -191,16 +191,16 @@ const Product = ({
         )}
       </Link>
       {dashboard && (
-        <div className="w-full flex items-center justify-around mt-6 mb-3">
+        <div className="w-full flex items-center justify-around mt-6 mb-3 max-sm:text-xs">
           <button
-            className="rounded-md bg-blue-100 text-blue-500 px-4 py-1 flex justify-center items-center gap-1 font-medium"
+            className="rounded-md bg-blue-100 text-blue-500 px-4 py-1 max-sm:px-2 flex justify-center items-center gap-1 font-medium"
             onClick={() => setUpdateForm({ data: id })}
           >
             <MdModeEdit />
             Edit
           </button>
           <button
-            className="rounded-md bg-red-100 text-red-500 px-4 py-1 flex justify-center items-center gap-1 font-medium"
+            className="rounded-md bg-red-100 text-red-500 px-4 py-1 max-sm:px-2 flex justify-center items-center gap-1 font-medium"
             onClick={onOpen}
           >
             <FaTrash />
