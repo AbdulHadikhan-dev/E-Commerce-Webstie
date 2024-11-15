@@ -17,6 +17,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 const Navbar2 = ({ varients }) => {
   const admin = useSelector((state) => state.admin.value);
+  const authenticated = useSelector((state) => state.authenticated.value);
 
   const { loginWithRedirect, isAuthenticated } = useAuth0();
 
@@ -59,7 +60,7 @@ const Navbar2 = ({ varients }) => {
             <span className="text-sm">Favorite</span>
           </div>
         </NavLink>
-        {!admin && isAuthenticated && (
+        {authenticated && (
           <NavLink
             to={"/profile"}
             className={({ isActive }) =>
@@ -72,7 +73,7 @@ const Navbar2 = ({ varients }) => {
             </div>
           </NavLink>
         )}
-        {!isAuthenticated && (
+        {!authenticated && (
           // <Link to={"/login"}>
           <div
             className="w-[25%]"
@@ -88,10 +89,10 @@ const Navbar2 = ({ varients }) => {
           </div>
           // </Link>
         )}
-        {admin && (
+        {authenticated && (
           <NavLink to={"/dashboard"} className="w-[25%]">
             <div className="profile flex flex-col gap-1 cursor-pointer font-semibold hover:text-black text-[#6C7278] duration-500  items-center justify-center">
-              <AiOutlineFundProjectionScreen className="h-7 w-7" />
+              <AiOutlineFundProjectionScreen className="h-8 w-8" />
               <span className="text-sm">Dashboard</span>
             </div>
           </NavLink>

@@ -64,7 +64,9 @@ const AdminDashboard = () => {
   };
 
   const actionButton = async (action) => {
-    const url = `http://localhost:3000/api/order/${action.status}/query?order_id=${action.id}&user_email=${action.email}`;
+    const url = `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/order/${
+      action.status
+    }/query?order_id=${action.id}&user_email=${action.email}`;
     const response = await fetch(url);
     let r = await response.json();
     console.log(r);

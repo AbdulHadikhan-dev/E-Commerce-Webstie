@@ -433,11 +433,17 @@ const UserProfile = ({
                         key={item.id}
                       >
                         <img src={item.image[0]} alt="" className="h-20" />
-                        <div className="details">
+                        <div className="details flex flex-col gap-2">
                           <p className="text-lg font-medium">{item.title}</p>
+                          <div className="flex gap-3 items-center">
+
                           <p className="text-base">
                             {item.price} x {item.quantity}
                           </p>
+                          <div className={`inline-block w-fit rounded-md px-3 py-1 font-semibold text-sm ${item.status==='processing'?'text-yellow-600 bg-yellow-50': item.status === 'deliverd'? 'text-green-600 bg-green-100': item.status === 'cancel'?'text-red-500 bg-red-100' : 'hidden'}`}>
+                            {item.status}
+                          </div>
+                          </div>
                         </div>
                       </div>
                     );

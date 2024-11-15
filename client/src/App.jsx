@@ -107,10 +107,10 @@ function App() {
       let user = JSON.parse(localStorage.getItem("user"));
       console.log("user from local storage", user);
 
-      fetchUser(user);
       checkUser(user);
+      fetchUser(user);
 
-      console.log(user);
+      console.log(user); 
       dispatch(Login());
     }
     if (isAuthenticated) {

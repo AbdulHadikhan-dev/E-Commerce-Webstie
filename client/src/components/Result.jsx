@@ -103,7 +103,7 @@ const Search = () => {
             <PiFire className="h-5 w-5" />
           </div>
           <div
-            className="flex flex-row-reverse gap-1 items-center font-semibold z-40"
+            className="flex flex-row-reverse gap-1 items-center font-semibold z-40 hidden"
             onClick={() => {
               const categories = document.querySelector(".categories");
               if (categories.classList.contains("false")) {

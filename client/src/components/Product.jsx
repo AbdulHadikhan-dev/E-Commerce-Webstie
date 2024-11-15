@@ -107,7 +107,6 @@ const Product = ({
           setIsLoading(true);
           console.log(favorites);
           setTimeout(() => {
-            setIsLoading(false);
             let findItem = favorites.find((item) => {
               return item.id === id;
               // localStorage.setItem("favorites", JSON.stringify(favorite));

@@ -11,12 +11,14 @@ import { FiShoppingBag } from "react-icons/fi";
 import { useSelector, useDispatch } from "react-redux";
 import { addProduct, addQuantity } from "../Redux/cartSlice";
 // import Product from "./Product";
-import { addToWishList } from "../Redux/favoraiteSlice";
+import { addToWishList, removeItemFromWishList } from "../Redux/favoraiteSlice";
 
+import { Spinner } from "@chakra-ui/react";
 
 const ProductDetail = () => {
   const cart = useSelector((state) => state.cart.value);
   const product = useSelector((state) => state.product.value);
+  const favorites = useSelector((state) => state.favorites.value);
   const dispatch = useDispatch();
 
   const [productDetail, setProductDetail] = useState([]);
@@ -26,6 +28,8 @@ const ProductDetail = () => {
   const [selectSize, setSelectSize] = useState(sizes[0]);
   const [quantity, setQuantity] = useState(1);
   // const [Alert, setAlert] = useState({});
+  const [favoraite, setFavoraite] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
   // console.log(id);
 
@@ -34,17 +38,17 @@ const ProductDetail = () => {
     // let response = await fetch(`https://dummyjson.com/products/${id}`);
     // let data = await response.json();
     // console.log(data);
-    let r =product.find(product => product.id == id)
-
+    let r = product.find((product) => product.id == id);
 
     setProductDetail([r]);
     // console.log(r);
   }
+  console.log(favoraite, isLoading);
 
   useEffect(() => {
     getProductDetail();
-  }, [id]);
-  
+  }, [id, product]);
+
   // Dispatching action to add a product or update its quantity
   const handleAddToCart = () => {
     let existingProduct = "";
@@ -124,7 +128,7 @@ const ProductDetail = () => {
         {console.log("productDetails")}
         <Navigation heading={"Detail Product"} screen={"lg:hidden"} />
         <div className="flex max-sm:flex-col">
-          <div className="img h-1/2 2xl:h-1/3 sm:w-1/2 sm:ml-2 flex gap-2 justify-end">
+          <div className="img h-1/2 2xl:h-1/3 sm:w-1/2 sm:ml-2 flex gap-2 justify-end max-sm:hidden">
             <div className="images flex flex-col gap-2 max-sm:hidden justify-normal 2xl:justify-normal items-center">
               {productDetail[0].images.map((item, index) => {
                 return (
@@ -150,6 +154,24 @@ const ProductDetail = () => {
                 className="sm:rounded-lg  max-h-[700px]"
               />
             </div>
+          </div>
+          <div className="carousel w-full sm:hidden h-[70%]">
+            {productDetail[0].images.map((image, index) => {
+              return <div id={`slide${index+1}`} className="carousel-item relative w-full" key={image}>
+              <img
+                src={image}
+                className="w-full"
+                />
+              <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                <a href={`#slide${index.length}`} className="btn btn-circle">
+                  ❮
+                </a>
+                <a href={`#slide${index+2}`} className="btn btn-circle">
+                  ❯
+                </a>
+              </div>
+            </div>
+              })}
           </div>
           <div className="information relative pl-5 pr-8 py-2 flex flex-col gap-4 sm:my-0 sm:py-0 my-3 sm:w-1/2">
             <div className="core flex flex-col gap-[2px] lg:gap-2">
@@ -268,24 +290,49 @@ const ProductDetail = () => {
                 ADD TO CART
               </button>
               <button
-                className={`border border-black p-2 text-base w-full flex gap-3 items-center font-semibold justify-center bg-black text-white cursor-pointer hover:text-slate-200 duration-200 ${
+                className={`border border-black md:p-2 p-1 text-base w-full flex md:gap-3 gap-1 items-center font-semibold justify-center bg-black text-white cursor-pointer hover:text-slate-200 duration-200 ${
                   productDetail[0].stock === 0 && "hidden"
                 }`}
                 onClick={() => {
-                  dispatch(
-                    addToWishList({
-                      id: productDetail[0].id,
-                      title: productDetail[0].title,
-                      price: productDetail[0].price,
-                      image: productDetail[0].images[0],
-                      rating: productDetail[0].rating,
-                      reviews: productDetail[0].reviews,
-                      brand: productDetail[0].brand,
-                    })
-                  );
+                  setIsLoading(true);
+                  console.log(favorites);
+                  setTimeout(() => {
+                    let findItem = favorites.find((item) => {
+                      return item.id === productDetail[0].id;
+                      // localStorage.setItem("favorites", JSON.stringify(favorite));
+                    });
+
+                    if (!findItem) {
+                      dispatch(
+                        addToWishList({
+                          id: productDetail[0].id,
+                          title: productDetail[0].title,
+                          price: productDetail[0].price,
+                          image: productDetail[0].image,
+                          rating: productDetail[0].rating,
+                          reviews: productDetail[0].reviews,
+                          brand: productDetail[0].brand,
+                          discount: productDetail[0].discount,
+                        })
+                      );
+                      setFavoraite(true);
+                    } else {
+                      dispatch(removeItemFromWishList(findItem));
+                      setFavoraite(false);
+                    }
+                    setIsLoading(false);
+                  }, 1300);
                 }}
               >
-                ADD TO WISHLIST <IoMdHeart className="text-white scale-150" />
+                {!favoraite && !isLoading
+                  ? "Add To WishList"
+                  : favoraite && !isLoading
+                  ? "Remove From WishList"
+                  : ""}
+                {!isLoading && <IoMdHeart className="text-white scale-150" />}
+                {isLoading && (
+                  <Spinner className="h-4 w-4 lg:h-6 lg:w-6 text-white" />
+                )}
               </button>
             </div>
           </div>
