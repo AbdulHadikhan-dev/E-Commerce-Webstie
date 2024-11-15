@@ -8,6 +8,7 @@ import {
   FiMenu,
   FiX,
 } from "react-icons/fi";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import { LuPackagePlus } from "react-icons/lu";
 import User from "./User";
 import {
@@ -188,7 +189,7 @@ const AdminDashboard = () => {
         );
       case "Orders":
         return (
-          <div className="sm:p-6 bg-gray-100 min-h-screen w-full">
+          <div className="sm:p-6 bg-gray-100 min-h-screen overflow-hidden">
             <div className="bg-white rounded-lg md:p-4 shadow-md">
               <AlertDialog
                 isOpen={isOpen}
@@ -228,7 +229,7 @@ const AdminDashboard = () => {
                   </AlertDialogContent>
                 </AlertDialogOverlay>
               </AlertDialog>
-              <div className="flex justify-between items-center mb-4 hidden">
+              <div className="justify-between items-center mb-4 hidden">
                 <input
                   type="text"
                   placeholder="Search here..."
@@ -241,7 +242,7 @@ const AdminDashboard = () => {
 
               <table className="w-full text-left">
                 <thead>
-                  <tr className="bg-gray-200 text-gray-600 uppercase text-sm max-sm:text-xs leading-normal">
+                  <tr className="bg-gray-200 text-gray-600 uppercase text-base max-sm:text-xs leading-normal">
                     <th className="py-3 px-4">Product</th>
                     <th className="py-3 px-4">Product ID</th>
                     <th className="py-3 px-4">Price</th>
@@ -252,7 +253,7 @@ const AdminDashboard = () => {
                     <th className="py-3 px-4">Action</th>
                   </tr>
                 </thead>
-                <tbody className="text-gray-700 text-sm max-sm:text-xs">
+                <tbody className="text-gray-700 text-base max-sm:text-xs">
                   {orders.map((order) => {
                     console.log(orders);
                     return order.cart.map((item, index) => {
@@ -264,7 +265,7 @@ const AdminDashboard = () => {
                             item.status === "delete" && "hidden"
                           }`}
                         >
-                          <td className="py-3 px-4 flex items-center">
+                          <td className="py-3 px-4 flex items-center font-medium">
                             <img
                               src={item.image[0]}
                               alt={item.image[0]}
@@ -283,7 +284,7 @@ const AdminDashboard = () => {
                             {order.creditCard ? "Card" : "Cash on delivery"}
                           </td>
 
-                          <td className="py-3 px-4">{order.user?.email}</td>
+                          <td className="py-3 px-4 font-medium">{order.user?.email}</td>
                           <td className="py-3 px-4">
                             <button
                               className={`px-2 py-1 rounded-md font-semibold inline-block ${
@@ -312,7 +313,7 @@ const AdminDashboard = () => {
                           <td className="py-3 px-4 flex space-x-2">
                             <div className="dropdown">
                               <div tabIndex={0} role="button" className="btn">
-                                Action
+                                <BsThreeDotsVertical />
                               </div>
                               <ul
                                 tabIndex={0}
@@ -467,7 +468,7 @@ const AdminDashboard = () => {
             </button>
             <h2 className="text-2xl font-bold">{activePage}</h2>
           </div>
-          <button
+          {/* <button
             onClick={toggleDarkMode}
             className={`px-4 py-2 rounded-md transition-colors duration-200 ${
               darkMode
@@ -476,7 +477,7 @@ const AdminDashboard = () => {
             }`}
           >
             {darkMode ? "Light Mode" : "Dark Mode"}
-          </button>
+          </button> */}
         </div>
 
         {renderContent()}
