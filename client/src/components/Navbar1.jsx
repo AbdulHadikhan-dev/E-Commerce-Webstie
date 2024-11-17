@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { LiaUser } from "react-icons/lia";
@@ -26,7 +27,7 @@ const Navbar = ({ varients, icons, logo }) => {
 
   const suggestion = useRef();
 
-  const { loginWithRedirect, isAuthenticated } = useAuth0();
+  const { loginWithRedirect } = useAuth0();
 
   useEffect(() => {
     fetch("https://dummyjson.com/products/categories")
@@ -80,7 +81,10 @@ const Navbar = ({ varients, icons, logo }) => {
       <nav
         className={`flex justify-between px-6 lg:px-12 py-3 items-center bg-opacity-15 ${varients}`}
       >
-        <div className={`logo text-2xl lg:text-4xl font-bold ${logo}`}>
+        <div
+          className={`logo text-2xl lg:text-4xl font-bold cursor-pointer ${logo}`}
+          onClick={() => (location.href = "/")}
+        >
           BR.<span className="text-[#bcc1a3]">F</span>
         </div>
         <div
@@ -186,8 +190,8 @@ const Navbar = ({ varients, icons, logo }) => {
           </div>
         </div>
         <div className="overall flex gap-6 items-center max-lg:gap-0 ">
-          <Cart varients={`h-6 w-6 lg:h-7 md:w-7 ${icons}`} />
-          <div className="favorite  max-lg:hidden">
+          <Cart varients={`h-6 w-6 lg:h-7 md:w-7 ${icons} hover:scale-110 duration-200`} />
+          <div className="favorite  max-lg:hidden hover:scale-110 duration-200">
             <Link to={"/wishlist"}>
               <div className="favorite">
                 <MdFavoriteBorder
@@ -198,7 +202,7 @@ const Navbar = ({ varients, icons, logo }) => {
           </div>
           {authenticated && (
             <Link to={"/profile"}>
-              <div className="profile max-lg:hidden">
+              <div className="profile max-lg:hidden hover:scale-110 duration-200">
                 <div className="user">
                   <LiaUser
                     className={`h-8 w-8 lg:h-9 md:w-9 cursor-pointer ${icons}`}
@@ -210,7 +214,7 @@ const Navbar = ({ varients, icons, logo }) => {
           {!authenticated && (
             // <Link to={"/login"}>
             <div
-              className="profile max-lg:hidden"
+              className="profile max-lg:hidden hover:scale-110 duration-200"
               onClick={() => {
                 loginWithRedirect();
               }}
@@ -225,7 +229,7 @@ const Navbar = ({ varients, icons, logo }) => {
           )}
           {authenticated && (
             <Link to={"/dashboard"}>
-              <div className="profile max-lg:hidden">
+              <div className="profile max-lg:hidden hover:scale-110 duration-200">
                 <div className="user">
                   <AiOutlineFundProjectionScreen
                     className={`h-8 w-8 lg:h-9 lg:w-9 cursor-pointer ${icons}`}

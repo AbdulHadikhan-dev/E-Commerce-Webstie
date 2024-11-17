@@ -44,6 +44,7 @@ const ShoppingCart = () => {
   const [errors, setErrors] = useState({});
   const [errors2, setErrors2] = useState({});
   const [payMethod, setPayMethod] = useState("card");
+  const [disabled, setDisabled] = useState(false);
 
   const updateQuantityFun = (item, newQuantity) => {
     console.log("updateQuantity", item);
@@ -124,6 +125,7 @@ const ShoppingCart = () => {
             );
             return false;
           }
+          setDisabled(true);
           // Make API call to submit order with user information
           let postData = await fetch(
             `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/order/add`,
@@ -162,6 +164,7 @@ const ShoppingCart = () => {
               name: "",
             });
             setPromoCode("");
+            setDisabled(false);
           }
         } else {
           loginWithRedirect();
@@ -189,6 +192,7 @@ const ShoppingCart = () => {
             );
             return false;
           }
+          setDisabled(true);
           // Make API call to submit order with user information
           let postData = await fetch(
             `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/order/add`,
@@ -228,6 +232,7 @@ const ShoppingCart = () => {
               zip: "",
               additional: "",
             });
+            setDisabled(false);
           }
         } else {
           loginWithRedirect();
@@ -712,6 +717,7 @@ const ShoppingCart = () => {
               <button
                 type="submit"
                 className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
+                disabled={disabled === true}
               >
                 Place Order
               </button>

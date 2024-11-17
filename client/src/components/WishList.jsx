@@ -19,9 +19,7 @@ const WishList = () => {
         <h1 className="text-4xl font-bold text-gray-800 mb-4 sm:mb-0">
           Your Favorites
         </h1>
-        <button className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white py-2 px-6 rounded-lg shadow-lg hover:from-blue-600 hover:to-indigo-600 transition duration-300">
-          Sort by Price
-        </button>
+        
       </header>
 
       <div className="flex flex-col sm:flex-row items-center sm:items-start flex-wrap gap-6">

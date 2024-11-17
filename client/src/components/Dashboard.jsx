@@ -36,6 +36,8 @@ import {
   Button,
 } from "@chakra-ui/react";
 
+import { useToast } from "@chakra-ui/react";
+
 const AdminDashboard = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -45,8 +47,11 @@ const AdminDashboard = () => {
   const [deleteProduct, setDeleteProduct] = useState({});
   const [updateForm, setUpdateForm] = useState({});
   const products = useSelector((state) => state.product.value);
+  const admin = useSelector((state) => state.admin.value);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
+
+  const toast = useToast();
 
   const fetchUsers = async () => {
     const url = `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/user/all`;
@@ -65,14 +70,25 @@ const AdminDashboard = () => {
   };
 
   const actionButton = async (action) => {
-    const url = `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/order/${
-      action.status
-    }/query?order_id=${action.id}&user_email=${action.email}`;
-    const response = await fetch(url);
-    let r = await response.json();
-    console.log(r);
-    alert(r.msg);
-    fetchOrders();
+    if (admin) {
+      const url = `${import.meta.env.VITE_REACT_PUBLIC_BACKEND_URL}/api/order/${
+        action.status
+      }/query?order_id=${action.id}&user_email=${action.email}`;
+      const response = await fetch(url);
+      let r = await response.json();
+      console.log(r);
+      alert(r.msg);
+      fetchOrders();
+    } else {
+      toast({
+        title: "Oops! Something went wrong",
+        description: "Only Admin can Change product status!",
+        status: "error",
+        position: "top-right",
+        duration: 4000,
+        isClosable: true,
+      });
+    }
   };
 
   useEffect(() => {
@@ -93,11 +109,11 @@ const AdminDashboard = () => {
     setDarkMode(isDarkMode);
   }, []);
 
-  const toggleDarkMode = () => {
-    const newDarkMode = !darkMode;
-    setDarkMode(newDarkMode);
-    localStorage.setItem("darkMode", newDarkMode);
-  };
+  // const toggleDarkMode = () => {
+  //   const newDarkMode = !darkMode;
+  //   setDarkMode(newDarkMode);
+  //   localStorage.setItem("darkMode", newDarkMode);
+  // };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -189,7 +205,7 @@ const AdminDashboard = () => {
         );
       case "Orders":
         return (
-          <div className="sm:p-6 bg-gray-100 min-h-screen overflow-hidden">
+          <div className="sm:p-6 bg-gray-100 min-h-screen w-auto flex justify-center items-center">
             <div className="bg-white rounded-lg md:p-4 shadow-md">
               <AlertDialog
                 isOpen={isOpen}
@@ -284,7 +300,9 @@ const AdminDashboard = () => {
                             {order.creditCard ? "Card" : "Cash on delivery"}
                           </td>
 
-                          <td className="py-3 px-4 font-medium">{order.user?.email}</td>
+                          <td className="py-3 px-4 font-medium">
+                            {order.user?.email}
+                          </td>
                           <td className="py-3 px-4">
                             <button
                               className={`px-2 py-1 rounded-md font-semibold inline-block ${
