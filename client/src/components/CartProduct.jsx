@@ -528,13 +528,14 @@ const ShoppingCart = () => {
                 )}
               </div>
               <div className="mb-4">
-                <label htmlFor="promoCode" className="block mb-1">
+                <label htmlFor="additional" className="block mb-1">
                   Additional
                 </label>
                 <input
                   type="text"
                   id="additional"
-                  value={promoCode}
+                  name="additional"
+                  value={deliveryForm.additional}
                   onChange={handleChange}
                   className="w-full border rounded px-3 py-2"
                   placeholder="Enter Additional Information"

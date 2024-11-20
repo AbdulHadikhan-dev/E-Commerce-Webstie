@@ -297,7 +297,7 @@ const AdminDashboard = () => {
                             {item.quantity}
                           </td>
                           <td className="py-3 px-4 font-semibold">
-                            {order.creditCard ? "Card" : "Cash on delivery"}
+                            {order.creditCard ? "credit card" : "cash on delivery"}
                           </td>
 
                           <td className="py-3 px-4 font-medium">
