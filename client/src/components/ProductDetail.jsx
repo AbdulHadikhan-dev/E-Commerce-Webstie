@@ -94,6 +94,7 @@ const ProductDetail = () => {
           sizes,
           image: productDetail[0].images,
           rating: productDetail[0].rating,
+          status: 'processing',
           // favorite: false,
         })
       );
