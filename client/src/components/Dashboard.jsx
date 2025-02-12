@@ -430,12 +430,6 @@ const AdminDashboard = () => {
             <AddProductPage darkMode={darkMode} />
           </div>
         );
-      case "Customers":
-        return (
-          <div>
-            <User />
-          </div>
-        );
       default:
         return <div className="text-xl">Page not found</div>;
     }
@@ -474,7 +468,6 @@ const AdminDashboard = () => {
           <NavItem icon={FiShoppingBag} text="Orders" />
           <NavItem icon={FiPackage} text="Products" />
           <NavItem icon={LuPackagePlus} text="AddProducts" />
-          <NavItem icon={FiUsers} text="Customers" />
         </ul>
       </nav>
 
@@ -486,16 +479,6 @@ const AdminDashboard = () => {
             </button>
             <h2 className="text-2xl font-bold">{activePage}</h2>
           </div>
-          {/* <button
-            onClick={toggleDarkMode}
-            className={`px-4 py-2 rounded-md transition-colors duration-200 ${
-              darkMode
-                ? "bg-yellow-400 text-gray-900 hover:bg-yellow-300"
-                : "bg-gray-800 text-white hover:bg-gray-700"
-            }`}
-          >
-            {darkMode ? "Light Mode" : "Dark Mode"}
-          </button> */}
         </div>
 
         {renderContent()}
